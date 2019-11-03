@@ -1,0 +1,107 @@
+/* ---- 
+DEFAULT
+---- */
+*,
+:before,
+:after {
+	margin: 0;
+	padding: 0;
+	outline: 0;
+	box-sizing: border-box;
+}
+
+audio {
+	display: none;
+}
+
+button {
+	border-radius: 30px;
+	margin-left: 10vh;
+	padding: 10px 20px;
+	font-family: "Press Start 2P", cursive;
+	font-weight: bold;
+}
+
+button:hover {
+	background-color: lightgreen;
+	color: green;
+}
+
+h1,
+p {
+	margin: 5vh 10vh;
+}
+
+h1 {
+	color: forestgreen;
+	font-size: 2.5em;
+}
+
+img {
+	display: none;
+}
+
+strong {
+	color: darkgreen;
+	font-size: 1.5em;
+	display: block;
+	margin-bottom: 20px;
+}
+
+/* ---- 
+CLASS
+---- */
+.container {
+	width: 100vw;
+	height: 100vh;
+	display: flex;
+	align-items: flex-start;
+	background-color: black;
+	background-size: cover;
+	font-family: "Press Start 2P", cursive;
+	color: whitesmoke;
+}
+
+.container > .left {
+	width: 50vw;
+}
+
+.pixel {
+	display: table-cell;
+	background-color: white;
+	width: 20px;
+	height: 20px;
+}
+.pixel.black {
+	background-color: black;
+}
+.pixel.lightgreen {
+	background-color: lightgreen;
+}
+
+.pixel.lightseagreen {
+	background-color: lightseagreen;
+}
+
+.pixel.sandybrown {
+	background-color: sandybrown;
+}
+
+.row {
+	display: table-row;
+}
+
+#art {
+	display: table;
+	border-spacing: 1px;
+	background-color: black;
+	border: 5px solid green;
+	align-content: initial;
+	margin-left: 10vh;
+	margin-top: 10vh;
+}
+
+#canvas {
+	border: 5px solid green;
+	margin: 5vh 0;
+}
