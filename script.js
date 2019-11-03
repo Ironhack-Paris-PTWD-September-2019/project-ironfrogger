@@ -10,6 +10,7 @@ let carsLeft, carsRight, trucksLeft, trucksRight;
 let gameover, win, raf;
 let frames = 0;
 let ranking = [];
+let rankingLine;
 
 function draw() {
 	ctx.clearRect(0, 0, W, H);
@@ -62,19 +63,19 @@ function draw() {
 	ctx.stroke();
 	ctx.closePath();
 
-	// Nénuphars
-	lilypad = document.querySelector("#lilypad");
-	// Ligne 1 - 3 d'affilée
-	ctx.drawImage(lilypad, 0, 0.3 * H);
-	ctx.drawImage(lilypad, lilypad.width, 0.3 * H);
-	ctx.drawImage(lilypad, 2 * lilypad.width, 0.3 * H);
-	// LIgne 2 - 2 d'affilée
-	ctx.drawImage(lilypad, 3 * lilypad.width, 0.2 * H);
-	ctx.drawImage(lilypad, 4 * lilypad.width, 0.2 * H);
-	// Ligne 3 - 1 sur 2
-	ctx.drawImage(lilypad, 2 * lilypad.width, 0.1 * H);
-	ctx.drawImage(lilypad, 4 * lilypad.width, 0.1 * H);
-	ctx.drawImage(lilypad, 6 * lilypad.width, 0.1 * H);
+	// // Nénuphars
+	// lilypad = document.querySelector("#lilypad");
+	// // Ligne 1 - 3 d'affilée
+	// ctx.drawImage(lilypad, 0, 0.3 * H);
+	// ctx.drawImage(lilypad, lilypad.width, 0.3 * H);
+	// ctx.drawImage(lilypad, 2 * lilypad.width, 0.3 * H);
+	// // LIgne 2 - 2 d'affilée
+	// ctx.drawImage(lilypad, 3 * lilypad.width, 0.2 * H);
+	// ctx.drawImage(lilypad, 4 * lilypad.width, 0.2 * H);
+	// // Ligne 3 - 1 sur 2
+	// ctx.drawImage(lilypad, 2 * lilypad.width, 0.1 * H);
+	// ctx.drawImage(lilypad, 4 * lilypad.width, 0.1 * H);
+	// ctx.drawImage(lilypad, 6 * lilypad.width, 0.1 * H);
 
 	// Frogger
 	frogger.draw();
@@ -249,6 +250,35 @@ document.getElementById("btn-start").onclick = function() {
 	startGame();
 };
 
+document.getElementById("btn-ranking").onclick = function() {
+	document.getElementById("art").style.display = "none";
+	removeAllChildren(document.querySelector(".ranking"));
+	if (ranking.length === 0) {
+		rankingLine = document.createElement("p");
+		rankingLine.style.color = "red";
+		rankingLine.style.lineHeight = "2em";
+		rankingLine.innerHTML =
+			"Personne dans le classement. <br>Sois le premier !";
+		document.querySelector(".ranking").appendChild(rankingLine);
+	} else {
+		ranking.map((el, i) => {
+			rankingLine = document.createElement("p");
+			rankingLine.innerHTML = `${i + 1} - ${el.nom.toUpperCase()} : ${
+				el.score
+			}`;
+			document.querySelector(".ranking").appendChild(rankingLine);
+		});
+	}
+};
+
 function comparer(a, b) {
 	return b.score - a.score;
+}
+
+function removeAllChildren(node) {
+	let child = node.lastElementChild;
+	while (child) {
+		node.removeChild(child);
+		child = node.lastElementChild;
+	}
 }

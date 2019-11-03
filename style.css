@@ -20,6 +20,7 @@ button {
 	padding: 10px 20px;
 	font-family: "Press Start 2P", cursive;
 	font-weight: bold;
+	display: inline-block;
 }
 
 button:hover {
