@@ -9,6 +9,7 @@ let lilypad;
 let carsLeft, carsRight, trucksLeft, trucksRight;
 let gameover, win, raf;
 let frames = 0;
+let ranking = [];
 
 function draw() {
 	ctx.clearRect(0, 0, W, H);
@@ -212,6 +213,13 @@ function animLoop() {
 
 	draw();
 
+	if (gameover || win) {
+		let name = window.prompt("Indiquer votre nom");
+		ranking.push({ nom: name, score: points });
+		ranking.sort(comparer);
+		// console.log(ranking);
+	}
+
 	if (!gameover) {
 		raf = requestAnimationFrame(animLoop);
 		points++;
@@ -224,6 +232,7 @@ function startGame() {
 	}
 
 	gameover = false;
+	win = false;
 	points = 0;
 
 	frogger = new Frogger();
@@ -239,3 +248,7 @@ function startGame() {
 document.getElementById("btn-start").onclick = function() {
 	startGame();
 };
+
+function comparer(a, b) {
+	return b.score - a.score;
+}
