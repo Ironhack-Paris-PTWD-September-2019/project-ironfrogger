@@ -173,6 +173,12 @@ function draw() {
 		// document.querySelector(".ost-main").pause()
 		// document.querySelector(".ost-win").play()
 	}
+
+	// Points
+	ctx.fillStyle = "black";
+	ctx.font = "60px sans-serif";
+	ctx.textAlign = "end";
+	ctx.fillText(points, 550, 55);
 }
 
 /* ---- 
@@ -208,6 +214,7 @@ function animLoop() {
 
 	if (!gameover) {
 		raf = requestAnimationFrame(animLoop);
+		points++;
 	}
 }
 
