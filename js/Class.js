@@ -44,7 +44,7 @@ class CarLeft extends Component {
 
 	hits(person) {
 		return (
-			Math.abs(this.x - person.x) <= this.w &&
+			!(person.x + person.w < this.x || person.x > this.x + this.w) &&
 			Math.round(this.y) === person.y
 		);
 	}
@@ -57,7 +57,7 @@ class TruckLeft extends Component {
 
 	hits(person) {
 		return (
-			Math.abs(this.x - person.x) <= this.w &&
+			!(person.x + person.w < this.x || person.x > this.x + this.w) &&
 			Math.round(this.y) === person.y
 		);
 	}
@@ -70,7 +70,7 @@ class CarRight extends Component {
 
 	hits(person) {
 		return (
-			Math.abs(this.x - person.x) <= person.w &&
+			!(person.x + person.w < this.x || person.x > this.x + this.w) &&
 			Math.round(this.y) === person.y
 		);
 	}
@@ -82,9 +82,7 @@ class TruckRight extends Component {
 	}
 
 	hits(person) {
-		return (
-			Math.abs(this.x - person.x) <= person.w &&
-			Math.round(this.y) === person.y
-		);
+		!(person.x + person.w < this.x || person.x > this.x + this.w) &&
+			Math.round(this.y) === person.y;
 	}
 }

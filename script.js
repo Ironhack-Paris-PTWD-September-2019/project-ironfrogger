@@ -206,7 +206,7 @@ function animLoop() {
 
 	draw();
 
-	if (!gameover && !win) {
+	if (!gameover) {
 		raf = requestAnimationFrame(animLoop);
 	}
 }
