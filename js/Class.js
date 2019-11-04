@@ -19,6 +19,32 @@ class Component {
 	}
 }
 
+class CarLeft extends Component {
+	constructor() {
+		super(-153, 0.7 * H, 153, 70, "img/car_from_left.png");
+	}
+
+	hits(person) {
+		return (
+			!(person.x + person.w < this.x || person.x > this.x + this.w) &&
+			Math.round(this.y) === person.y
+		);
+	}
+}
+
+class CarRight extends Component {
+	constructor() {
+		super(W, 0.5 * H, 153, 70, "img/car_from_right.png");
+	}
+
+	hits(person) {
+		return (
+			!(person.x + person.w < this.x || person.x > this.x + this.w) &&
+			Math.round(this.y) === person.y
+		);
+	}
+}
+
 class Frogger extends Component {
 	constructor() {
 		super(63, H * 0.4, 63, 70, "img/frogger.png");
@@ -37,35 +63,9 @@ class Frogger extends Component {
 	}
 }
 
-class CarLeft extends Component {
-	constructor() {
-		super(-153, 0.7 * H, 153, 70, "img/car_from_left.png");
-	}
-
-	hits(person) {
-		return (
-			!(person.x + person.w < this.x || person.x > this.x + this.w) &&
-			Math.round(this.y) === person.y
-		);
-	}
-}
-
 class TruckLeft extends Component {
 	constructor() {
 		super(-141, 0.8 * H, 141, 70, "img/truck_from_left.png");
-	}
-
-	hits(person) {
-		return (
-			!(person.x + person.w < this.x || person.x > this.x + this.w) &&
-			Math.round(this.y) === person.y
-		);
-	}
-}
-
-class CarRight extends Component {
-	constructor() {
-		super(W, 0.5 * H, 153, 70, "img/car_from_right.png");
 	}
 
 	hits(person) {

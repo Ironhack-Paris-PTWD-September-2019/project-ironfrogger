@@ -1,3 +1,6 @@
+/* ---- 
+DECLARATIONS DES VARIABLES
+---- */
 let $canvas = document.getElementById("canvas");
 let ctx = $canvas.getContext("2d");
 const W = canvas.width; // 567
@@ -12,28 +15,99 @@ let frames = 0;
 let ranking = [];
 let rankingLine;
 
+/* ---- 
+ACTIONS UTILISATEUR
+---- */
+document.getElementById("btn-start").onclick = function() {
+	startGame();
+};
+
+document.getElementById("btn-ranking").onclick = function() {
+	document.getElementById("art").style.display = "none";
+	removeAllChildren(document.querySelector(".ranking"));
+	if (ranking.length === 0) {
+		rankingLine = document.createElement("p");
+		rankingLine.style.color = "red";
+		rankingLine.style.lineHeight = "2em";
+		rankingLine.innerHTML =
+			"Personne dans le classement. <br>Sois le premier !";
+		document.querySelector(".ranking").appendChild(rankingLine);
+	} else {
+		ranking.map((el, i) => {
+			rankingLine = document.createElement("p");
+			rankingLine.innerHTML = `${i + 1} - ${el.nom.toUpperCase()} : ${
+				el.score
+			}`;
+			document.querySelector(".ranking").appendChild(rankingLine);
+		});
+	}
+};
+
+document.onkeydown = function(e) {
+	if (!frogger) return;
+
+	console.log("keydown");
+	switch (e.keyCode) {
+		case 37:
+			frogger.moveLeft();
+			break;
+		case 38:
+			frogger.moveUp();
+			break;
+		case 39:
+			frogger.moveRight();
+			break;
+		case 40:
+			frogger.moveDown();
+	}
+};
+
+/* ---- 
+HELPER FUNCTIONS
+---- */
+function animLoop() {
+	frames++;
+	draw();
+
+	// EN CAS DE VICTOIRE
+	if (win) {
+		let name = window.prompt("FIN DU JEU. Indiquer votre nom :");
+		ranking.push({ nom: name, score: points });
+		ranking.sort(comparer);
+		// console.log(ranking);
+	}
+
+	// CAS NOMINAL
+	if (!gameover && !win) {
+		raf = requestAnimationFrame(animLoop);
+		points++;
+	}
+}
+
+function comparer(a, b) {
+	return a.score - b.score;
+}
+
 function draw() {
 	ctx.clearRect(0, 0, W, H);
-	/* ---- 
-    BACKGROUND
-    ---- */
-	// Chaussée
+
+	// CHAUSSEE DEPART
 	ctx.fillStyle = "rgb(151,151,151)";
 	ctx.fillRect(0, H * 0.9, W, H * 0.1);
-	// Route
+	// ROUTE
 	ctx.fillStyle = "rgb(110,110,110)";
 	ctx.fillRect(0, H * 0.5, W, H * 0.4);
-	// Mare 1
+	// RIVE BAS
 	ctx.fillStyle = "rgb(223,172,79)";
 	ctx.fillRect(0, H * 0.4, W, H * 0.1);
-	// Eau
+	// EAU
 	ctx.fillStyle = "rgb(17,167,254)";
 	ctx.fillRect(0, H * 0.1, W, H * 0.3);
-	// Mare 2
+	// RIVE HAUT
 	ctx.fillStyle = "rgb(223,172,79)";
 	ctx.fillRect(0, 0, W, H * 0.1);
 
-	// Ligne de route 1 - dash
+	// LIGNE DE ROUTE 1
 	ctx.beginPath();
 	ctx.lineWidth = 10;
 	ctx.strokeStyle = "white";
@@ -43,7 +117,7 @@ function draw() {
 	ctx.stroke();
 	ctx.closePath();
 
-	// Ligne de route 2 - trait plein
+	// LIGNE DE ROUTE 2
 	ctx.beginPath();
 	ctx.lineWidth = 10;
 	ctx.strokeStyle = "sandybrown";
@@ -53,7 +127,7 @@ function draw() {
 	ctx.stroke();
 	ctx.closePath();
 
-	// Ligne de route 3 - dash
+	// LIGNE DE ROUTE 3
 	ctx.beginPath();
 	ctx.lineWidth = 10;
 	ctx.strokeStyle = "white";
@@ -63,25 +137,10 @@ function draw() {
 	ctx.stroke();
 	ctx.closePath();
 
-	// // Nénuphars
-	// lilypad = document.querySelector("#lilypad");
-	// // Ligne 1 - 3 d'affilée
-	// ctx.drawImage(lilypad, 0, 0.3 * H);
-	// ctx.drawImage(lilypad, lilypad.width, 0.3 * H);
-	// ctx.drawImage(lilypad, 2 * lilypad.width, 0.3 * H);
-	// // LIgne 2 - 2 d'affilée
-	// ctx.drawImage(lilypad, 3 * lilypad.width, 0.2 * H);
-	// ctx.drawImage(lilypad, 4 * lilypad.width, 0.2 * H);
-	// // Ligne 3 - 1 sur 2
-	// ctx.drawImage(lilypad, 2 * lilypad.width, 0.1 * H);
-	// ctx.drawImage(lilypad, 4 * lilypad.width, 0.1 * H);
-	// ctx.drawImage(lilypad, 6 * lilypad.width, 0.1 * H);
-
-	// Frogger
+	// FROGGER
 	frogger.draw();
 
-	// Animation
-	// Voitures et camions venant de la gauche
+	// VOITURES ET CAMIONS
 	if (frames % 200 === 0) {
 		truckRight = new TruckRight();
 		trucksRight.push(truckRight);
@@ -134,6 +193,7 @@ function draw() {
 		truck.draw();
 	});
 
+	// COLLISIONS VOITURES ET CAMIONS
 	for (obstacle of carsLeft) {
 		if (obstacle.hits(frogger)) {
 			console.log("crashed CL");
@@ -162,6 +222,21 @@ function draw() {
 		}
 	}
 
+	// NENUPHARS
+	// lilypad = document.querySelector("#lilypad");
+	// // Ligne 1 - 3 d'affilée
+	// ctx.drawImage(lilypad, 0, 0.3 * H);
+	// ctx.drawImage(lilypad, lilypad.width, 0.3 * H);
+	// ctx.drawImage(lilypad, 2 * lilypad.width, 0.3 * H);
+	// // LIgne 2 - 2 d'affilée
+	// ctx.drawImage(lilypad, 3 * lilypad.width, 0.2 * H);
+	// ctx.drawImage(lilypad, 4 * lilypad.width, 0.2 * H);
+	// // Ligne 3 - 1 sur 2
+	// ctx.drawImage(lilypad, 2 * lilypad.width, 0.1 * H);
+	// ctx.drawImage(lilypad, 4 * lilypad.width, 0.1 * H);
+	// ctx.drawImage(lilypad, 6 * lilypad.width, 0.1 * H);
+
+	// RESULTAT
 	if (frogger.y === 0 && !gameover) {
 		win = true;
 		document.querySelector(".txt").style.color = "green";
@@ -177,54 +252,18 @@ function draw() {
 		// document.querySelector(".ost-gameover").play()
 	}
 
-	// Points
+	// POINTS
 	ctx.fillStyle = "black";
 	ctx.font = "60px sans-serif";
 	ctx.textAlign = "end";
 	ctx.fillText(points, 550, 55);
 }
 
-/* ---- 
-MAIN MOVES
----- */
-document.onkeydown = function(e) {
-	if (!frogger) return;
-
-	console.log("keydown");
-	switch (e.keyCode) {
-		case 37:
-			// left
-			frogger.moveLeft();
-			break;
-		case 38:
-			// up
-			frogger.moveUp();
-			break;
-		case 39:
-			//right
-			frogger.moveRight();
-			break;
-		case 40:
-			// down
-			frogger.moveDown();
-	}
-};
-
-function animLoop() {
-	frames++;
-
-	draw();
-
-	if (win) {
-		let name = window.prompt("FIN DU JEU. Indiquer votre nom :");
-		ranking.push({ nom: name, score: points });
-		ranking.sort(comparer);
-		// console.log(ranking);
-	}
-
-	if (!gameover && !win) {
-		raf = requestAnimationFrame(animLoop);
-		points++;
+function removeAllChildren(node) {
+	let child = node.lastElementChild;
+	while (child) {
+		node.removeChild(child);
+		child = node.lastElementChild;
 	}
 }
 
@@ -245,41 +284,4 @@ function startGame() {
 
 	raf = requestAnimationFrame(animLoop);
 	// document.querySelector(".ost-main").play();
-}
-
-document.getElementById("btn-start").onclick = function() {
-	startGame();
-};
-
-document.getElementById("btn-ranking").onclick = function() {
-	document.getElementById("art").style.display = "none";
-	removeAllChildren(document.querySelector(".ranking"));
-	if (ranking.length === 0) {
-		rankingLine = document.createElement("p");
-		rankingLine.style.color = "red";
-		rankingLine.style.lineHeight = "2em";
-		rankingLine.innerHTML =
-			"Personne dans le classement. <br>Sois le premier !";
-		document.querySelector(".ranking").appendChild(rankingLine);
-	} else {
-		ranking.map((el, i) => {
-			rankingLine = document.createElement("p");
-			rankingLine.innerHTML = `${i + 1} - ${el.nom.toUpperCase()} : ${
-				el.score
-			}`;
-			document.querySelector(".ranking").appendChild(rankingLine);
-		});
-	}
-};
-
-function comparer(a, b) {
-	return a.score - b.score;
-}
-
-function removeAllChildren(node) {
-	let child = node.lastElementChild;
-	while (child) {
-		node.removeChild(child);
-		child = node.lastElementChild;
-	}
 }
