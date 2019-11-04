@@ -16,7 +16,7 @@ audio {
 
 button {
 	border-radius: 30px;
-	margin: 5vh 10vh;
+	margin: 2.5vh 2.5vh;
 	padding: 10px 18px;
 	font-family: "Press Start 2P", cursive;
 	font-weight: bold;
@@ -64,7 +64,8 @@ CLASS
 }
 
 .container > .left {
-	width: 50vw;
+	width: 45vw;
+	text-align: center;
 }
 
 .pixel {
@@ -88,8 +89,23 @@ CLASS
 	background-color: sandybrown;
 }
 
+.right {
+	width: 10 vw;
+}
+
+.right p {
+	writing-mode: vertical-rl;
+	text-orientation: upright;
+	font-size: 1.8em;
+	letter-spacing: 0.7em;
+}
+
 .row {
 	display: table-row;
+}
+
+.txt {
+	margin: 2.5vh 0;
 }
 
 #art {

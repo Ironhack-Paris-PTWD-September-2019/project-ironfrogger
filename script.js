@@ -138,8 +138,6 @@ function draw() {
 		if (obstacle.hits(frogger)) {
 			console.log("crashed CL");
 			gameover = true;
-			// document.querySelector(".ost-main").pause()
-			// document.querySelector(".ost-gameover").play()
 		}
 	}
 
@@ -147,8 +145,6 @@ function draw() {
 		if (obstacle.hits(frogger)) {
 			console.log("crashed CR");
 			gameover = true;
-			// document.querySelector(".ost-main").pause()
-			// document.querySelector(".ost-gameover").play()
 		}
 	}
 
@@ -156,8 +152,6 @@ function draw() {
 		if (obstacle.hits(frogger)) {
 			console.log("crashed TL");
 			gameover = true;
-			// document.querySelector(".ost-main").pause()
-			// document.querySelector(".ost-gameover").play()
 		}
 	}
 
@@ -165,15 +159,22 @@ function draw() {
 		if (obstacle.hits(frogger)) {
 			console.log("crashed TR");
 			gameover = true;
-			// document.querySelector(".ost-main").pause()
-			// document.querySelector(".ost-gameover").play()
 		}
 	}
 
 	if (frogger.y === 0 && !gameover) {
 		win = true;
+		document.querySelector(".txt").style.color = "green";
+		document.querySelector(".txt").innerHTML = "You win!".toUpperCase();
 		// document.querySelector(".ost-main").pause()
 		// document.querySelector(".ost-win").play()
+	}
+
+	if (gameover) {
+		document.querySelector(".txt").style.color = "red";
+		document.querySelector(".txt").innerHTML = "You lose...".toUpperCase();
+		// document.querySelector(".ost-main").pause()
+		// document.querySelector(".ost-gameover").play()
 	}
 
 	// Points
@@ -214,14 +215,14 @@ function animLoop() {
 
 	draw();
 
-	if (gameover || win) {
-		let name = window.prompt("Indiquer votre nom");
+	if (win) {
+		let name = window.prompt("FIN DU JEU. Indiquer votre nom :");
 		ranking.push({ nom: name, score: points });
 		ranking.sort(comparer);
 		// console.log(ranking);
 	}
 
-	if (!gameover) {
+	if (!gameover && !win) {
 		raf = requestAnimationFrame(animLoop);
 		points++;
 	}
@@ -272,7 +273,7 @@ document.getElementById("btn-ranking").onclick = function() {
 };
 
 function comparer(a, b) {
-	return b.score - a.score;
+	return a.score - b.score;
 }
 
 function removeAllChildren(node) {

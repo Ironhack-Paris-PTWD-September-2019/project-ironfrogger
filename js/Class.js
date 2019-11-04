@@ -21,7 +21,7 @@ class Component {
 
 class Frogger extends Component {
 	constructor() {
-		super(63, H - h, 63, 70, "img/frogger.png");
+		super(63, H * 0.4, 63, 70, "img/frogger.png");
 	}
 	moveLeft() {
 		this.x += -this.w;
