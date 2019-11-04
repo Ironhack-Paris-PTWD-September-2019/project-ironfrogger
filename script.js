@@ -236,7 +236,7 @@ function startGame() {
 	gameover = false;
 	win = false;
 	points = 0;
-
+	document.querySelector(".txt").innerHTML = "";
 	frogger = new Frogger();
 	carsLeft = [];
 	carsRight = [];
