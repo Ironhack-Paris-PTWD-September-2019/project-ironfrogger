@@ -1,5 +1,5 @@
 /* ---- 
-DEFAULT
+DEFAUT
 ---- */
 *,
 :before,
@@ -16,7 +16,7 @@ audio {
 
 button {
 	border-radius: 30px;
-	margin: 2.5vh 2.5vh;
+	margin: 2.5vh auto;
 	padding: 10px 18px;
 	font-family: "Press Start 2P", cursive;
 	font-weight: bold;
@@ -50,7 +50,7 @@ strong {
 }
 
 /* ---- 
-CLASS
+CLASSES
 ---- */
 .container {
 	width: 100vw;
@@ -105,16 +105,19 @@ CLASS
 }
 
 .txt {
-	margin: 2.5vh 0;
+	margin: 2.5vh auto;
 }
 
+/* ---- 
+ID
+---- */
 #art {
 	display: table;
 	border-spacing: 1px;
 	background-color: black;
 	border: 5px solid green;
 	align-content: initial;
-	margin-left: 10vh;
+	margin: 0 auto;
 	margin-top: 2.5vh;
 }
 

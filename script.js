@@ -8,7 +8,8 @@ const H = canvas.height; // 700
 const w = 64;
 const h = 70;
 let frogger, carLeft, carRight, truckLeft, truckRight;
-let lilypad;
+let lilypad1, lilypad2, lilypad4;
+let lilypads1, lilypads2, lilypads4;
 let carsLeft, carsRight, trucksLeft, trucksRight;
 let gameover, win, raf;
 let frames = 0;
@@ -71,7 +72,7 @@ function animLoop() {
 
 	// EN CAS DE VICTOIRE
 	if (win) {
-		let name = window.prompt("FIN DU JEU. Indiquer votre nom :");
+		let name = window.prompt("GG! Indiquer votre nom :");
 		ranking.push({ nom: name, score: points });
 		ranking.sort(comparer);
 		// console.log(ranking);
@@ -137,6 +138,68 @@ function draw() {
 	ctx.stroke();
 	ctx.closePath();
 
+	// NENUPHARS
+	if (frames % 200 === 0) {
+		lilypad1 = new Lilypad();
+		lilypads1.push(lilypad1);
+	}
+
+	if (frames % 150 === 0) {
+		lilypad2 = new Lilypad2();
+		lilypads2.push(lilypad2);
+	}
+
+	if (frames % 100 === 0) {
+		lilypad4 = new Lilypad4();
+		lilypads4.push(lilypad4);
+	}
+
+	lilypads1.forEach(function(lilypad) {
+		if (lilypad.x > W) {
+			lilypads1 = lilypads1.filter(el => el !== lilypad);
+		}
+		lilypad.x += 2;
+		lilypad.draw();
+	});
+
+	lilypads2.forEach(function(lilypad) {
+		if (lilypad.x < -63) {
+			lilypads2 = lilypads2.filter(el => el !== lilypad);
+		}
+		lilypad.x -= 1;
+		lilypad.draw();
+	});
+
+	lilypads4.forEach(function(lilypad) {
+		if (lilypad.x > W) {
+			lilypads4 = lilypads4.filter(el => el !== lilypad);
+		}
+		lilypad.x += 3;
+		lilypad.draw();
+	});
+
+	// NON SUPPORT DES NENUPHARS
+	for (lilypad of lilypads1) {
+		if (lilypad.excludes(frogger)) {
+			console.log("drowned L1");
+			gameover = true;
+		}
+	}
+
+	for (lilypad of lilypads2) {
+		if (lilypad.excludes(frogger)) {
+			console.log("drowned L2");
+			gameover = true;
+		}
+	}
+
+	for (lilypad of lilypads4) {
+		if (lilypad.excludes(frogger)) {
+			console.log("drowned L4");
+			gameover = true;
+		}
+	}
+
 	// FROGGER
 	frogger.draw();
 
@@ -146,9 +209,11 @@ function draw() {
 		trucksRight.push(truckRight);
 	}
 
-	if (frames % 100 === 0) {
+	if (frames % 200 === 0) {
 		carRight = new CarRight();
 		carsRight.push(carRight);
+		carLeft = new CarLeft();
+		carsLeft.push(carLeft);
 	}
 
 	if (frames % 150 === 0) {
@@ -156,16 +221,11 @@ function draw() {
 		trucksLeft.push(truckLeft);
 	}
 
-	if (frames % 50 === 0) {
-		carLeft = new CarLeft();
-		carsLeft.push(carLeft);
-	}
-
 	carsLeft.forEach(function(car) {
 		if (car.x > W) {
 			carsLeft = carsLeft.filter(el => el !== car);
 		}
-		car.x += 10;
+		car.x += 3;
 		car.draw();
 	});
 
@@ -173,7 +233,7 @@ function draw() {
 		if (car.x < -153) {
 			carsRight = carsRight.filter(el => el !== car);
 		}
-		car.x -= 10;
+		car.x -= 5;
 		car.draw();
 	});
 
@@ -189,7 +249,7 @@ function draw() {
 		if (truck.x < -141) {
 			trucksRight = trucksRight.filter(el => el !== truck);
 		}
-		truck.x -= 5;
+		truck.x -= 7;
 		truck.draw();
 	});
 
@@ -222,34 +282,22 @@ function draw() {
 		}
 	}
 
-	// NENUPHARS
-	// lilypad = document.querySelector("#lilypad");
-	// // Ligne 1 - 3 d'affilée
-	// ctx.drawImage(lilypad, 0, 0.3 * H);
-	// ctx.drawImage(lilypad, lilypad.width, 0.3 * H);
-	// ctx.drawImage(lilypad, 2 * lilypad.width, 0.3 * H);
-	// // LIgne 2 - 2 d'affilée
-	// ctx.drawImage(lilypad, 3 * lilypad.width, 0.2 * H);
-	// ctx.drawImage(lilypad, 4 * lilypad.width, 0.2 * H);
-	// // Ligne 3 - 1 sur 2
-	// ctx.drawImage(lilypad, 2 * lilypad.width, 0.1 * H);
-	// ctx.drawImage(lilypad, 4 * lilypad.width, 0.1 * H);
-	// ctx.drawImage(lilypad, 6 * lilypad.width, 0.1 * H);
-
 	// RESULTAT
 	if (frogger.y === 0 && !gameover) {
 		win = true;
 		document.querySelector(".txt").style.color = "green";
-		document.querySelector(".txt").innerHTML = "You win!".toUpperCase();
-		// document.querySelector(".ost-main").pause()
-		// document.querySelector(".ost-win").play()
+		document.querySelector(".txt").innerHTML = "Bravo !".toUpperCase();
+		document.querySelector(".ost-main").pause();
+		document.querySelector(".ost-win").play();
 	}
 
 	if (gameover) {
 		document.querySelector(".txt").style.color = "red";
-		document.querySelector(".txt").innerHTML = "You lose...".toUpperCase();
-		// document.querySelector(".ost-main").pause()
-		// document.querySelector(".ost-gameover").play()
+		document.querySelector(
+			".txt"
+		).innerHTML = "Essaie encore".toUpperCase();
+		document.querySelector(".ost-main").pause();
+		document.querySelector(".ost-gameover").play();
 	}
 
 	// POINTS
@@ -281,7 +329,10 @@ function startGame() {
 	carsRight = [];
 	trucksLeft = [];
 	trucksRight = [];
+	lilypads1 = [];
+	lilypads2 = [];
+	lilypads4 = [];
 
 	raf = requestAnimationFrame(animLoop);
-	// document.querySelector(".ost-main").play();
+	document.querySelector(".ost-main").play();
 }
