@@ -13,3 +13,6 @@ img/.DS_Store
 .DS_Store
 img/lilypad2.png
 img/lilypad4.png
+img/sound-icon.png
+img/mute-icon.png
+sound/move.mp3

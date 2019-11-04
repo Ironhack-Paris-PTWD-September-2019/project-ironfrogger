@@ -61,6 +61,7 @@ document.onkeydown = function(e) {
 		case 40:
 			frogger.moveDown();
 	}
+	document.querySelector(".ost-move").play();
 };
 
 /* ---- 
@@ -72,10 +73,11 @@ function animLoop() {
 
 	// EN CAS DE VICTOIRE
 	if (win) {
-		let name = window.prompt("GG! Indiquer votre nom :");
-		ranking.push({ nom: name, score: points });
-		ranking.sort(comparer);
-		// console.log(ranking);
+		setTimeout(function() {
+			let name = window.prompt("GG! Indiquer votre nom :");
+			ranking.push({ nom: name, score: points });
+			ranking.sort(comparer);
+		}, 4000);
 	}
 
 	// CAS NOMINAL
@@ -158,7 +160,7 @@ function draw() {
 		if (lilypad.x > W) {
 			lilypads1 = lilypads1.filter(el => el !== lilypad);
 		}
-		lilypad.x += 2;
+		lilypad.x += 4;
 		lilypad.draw();
 	});
 
@@ -166,7 +168,7 @@ function draw() {
 		if (lilypad.x < -63) {
 			lilypads2 = lilypads2.filter(el => el !== lilypad);
 		}
-		lilypad.x -= 1;
+		lilypad.x -= 3;
 		lilypad.draw();
 	});
 
@@ -174,7 +176,7 @@ function draw() {
 		if (lilypad.x > W) {
 			lilypads4 = lilypads4.filter(el => el !== lilypad);
 		}
-		lilypad.x += 3;
+		lilypad.x += 5;
 		lilypad.draw();
 	});
 
@@ -204,28 +206,25 @@ function draw() {
 	frogger.draw();
 
 	// VOITURES ET CAMIONS
-	if (frames % 200 === 0) {
+	if (frames % 150 === 0) {
 		truckRight = new TruckRight();
 		trucksRight.push(truckRight);
+		truckLeft = new TruckLeft();
+		trucksLeft.push(truckLeft);
 	}
 
-	if (frames % 200 === 0) {
+	if (frames % 70 === 0) {
 		carRight = new CarRight();
 		carsRight.push(carRight);
 		carLeft = new CarLeft();
 		carsLeft.push(carLeft);
 	}
 
-	if (frames % 150 === 0) {
-		truckLeft = new TruckLeft();
-		trucksLeft.push(truckLeft);
-	}
-
 	carsLeft.forEach(function(car) {
 		if (car.x > W) {
 			carsLeft = carsLeft.filter(el => el !== car);
 		}
-		car.x += 3;
+		car.x += 8;
 		car.draw();
 	});
 
@@ -233,7 +232,7 @@ function draw() {
 		if (car.x < -153) {
 			carsRight = carsRight.filter(el => el !== car);
 		}
-		car.x -= 5;
+		car.x -= 7;
 		car.draw();
 	});
 

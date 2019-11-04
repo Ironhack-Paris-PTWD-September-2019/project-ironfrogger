@@ -34,7 +34,7 @@ class CarLeft extends Component {
 
 class CarRight extends Component {
 	constructor() {
-		super(W, 0.5 * H, 153, 70, "img/car_from_right.png");
+		super(W, 0.6 * H, 153, 70, "img/car_from_right.png");
 	}
 
 	hits(person) {
@@ -47,19 +47,27 @@ class CarRight extends Component {
 
 class Frogger extends Component {
 	constructor() {
-		super(63 * 4, H * 0.9, 63, 70, "img/frogger.png");
+		super(63 * 3, H * 0.9, 63, 70, "img/frogger.png");
 	}
 	moveLeft() {
-		this.x += -this.w;
+		if (this.x > 0) {
+			this.x -= this.w;
+		}
 	}
 	moveRight() {
-		this.x += this.w;
+		if (this.x < W - w) {
+			this.x += this.w;
+		}
 	}
 	moveUp() {
-		this.y += -this.h;
+		if (this.y > 0) {
+			this.y -= this.h;
+		}
 	}
 	moveDown() {
-		this.y += this.h;
+		if (this.y < H - h) {
+			this.y += this.h;
+		}
 	}
 }
 
@@ -120,11 +128,13 @@ class TruckLeft extends Component {
 
 class TruckRight extends Component {
 	constructor() {
-		super(W, 0.6 * H, 141, 70, "img/truck_from_right.png");
+		super(W, 0.5 * H, 141, 70, "img/truck_from_right.png");
 	}
 
 	hits(person) {
-		!(person.x + person.w < this.x || person.x > this.x + this.w) &&
-			Math.round(this.y) === person.y;
+		return (
+			!(person.x + person.w < this.x || person.x > this.x + this.w) &&
+			Math.round(this.y) === person.y
+		);
 	}
 }
