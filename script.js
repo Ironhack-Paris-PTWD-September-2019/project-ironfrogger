@@ -165,7 +165,7 @@ function draw() {
 	});
 
 	lilypads2.forEach(function(lilypad) {
-		if (lilypad.x < -63) {
+		if (lilypad.x < -63 * 2) {
 			lilypads2 = lilypads2.filter(el => el !== lilypad);
 		}
 		lilypad.x -= 3;
@@ -176,7 +176,7 @@ function draw() {
 		if (lilypad.x > W) {
 			lilypads4 = lilypads4.filter(el => el !== lilypad);
 		}
-		lilypad.x += 5;
+		lilypad.x += 4;
 		lilypad.draw();
 	});
 
@@ -184,40 +184,27 @@ function draw() {
 	if (frogger.y === 0.1 * H) {
 		if (lilypads1.length === 0) {
 			gameover = true;
-		} else {
-			for (lilypad of lilypads1) {
-				if (!lilypad.includes(frogger)) {
-					console.log("drowned L1");
-					gameover = true;
-				}
-			}
+		} else if (lilypads1.every(exclude)) {
+			console.log("drowned L1");
+			gameover = true;
 		}
 	}
 
 	if (frogger.y === 0.2 * H) {
 		if (lilypads2.length === 0) {
 			gameover = true;
-		} else {
-			for (lilypad of lilypads2) {
-				if (!lilypad.includes(frogger)) {
-					console.log("drowned L2");
-					gameover = true;
-				}
-			}
+		} else if (lilypads2.every(exclude)) {
+			console.log("drowned L2");
+			gameover = true;
 		}
 	}
 
 	if (frogger.y === 0.3 * H) {
 		if (lilypads4.length === 0) {
 			gameover = true;
-		} else {
-			for (lilypad of lilypads4) {
-				if (!lilypad.includes(frogger)) {
-					console.log("drowned L4");
-					console.log(frogger, lilypad);
-					gameover = true;
-				}
-			}
+		} else if (lilypads4.every(exclude)) {
+			console.log("drowned L4");
+			gameover = true;
 		}
 	}
 
@@ -353,4 +340,8 @@ function startGame() {
 
 	raf = requestAnimationFrame(animLoop);
 	document.querySelector(".ost-main").play();
+}
+
+function exclude(currentLilypad) {
+	return currentLilypad.excludes(frogger);
 }
