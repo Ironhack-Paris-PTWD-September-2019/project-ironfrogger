@@ -181,24 +181,43 @@ function draw() {
 	});
 
 	// NON SUPPORT DES NENUPHARS
-	for (lilypad of lilypads1) {
-		if (lilypad.excludes(frogger)) {
-			console.log("drowned L1");
+	if (frogger.y === 0.1 * H) {
+		if (lilypads1.length === 0) {
 			gameover = true;
+		} else {
+			for (lilypad of lilypads1) {
+				if (!lilypad.includes(frogger)) {
+					console.log("drowned L1");
+					gameover = true;
+				}
+			}
 		}
 	}
 
-	for (lilypad of lilypads2) {
-		if (lilypad.excludes(frogger)) {
-			console.log("drowned L2");
+	if (frogger.y === 0.2 * H) {
+		if (lilypads2.length === 0) {
 			gameover = true;
+		} else {
+			for (lilypad of lilypads2) {
+				if (!lilypad.includes(frogger)) {
+					console.log("drowned L2");
+					gameover = true;
+				}
+			}
 		}
 	}
 
-	for (lilypad of lilypads4) {
-		if (lilypad.excludes(frogger)) {
-			console.log("drowned L4");
+	if (frogger.y === 0.3 * H) {
+		if (lilypads4.length === 0) {
 			gameover = true;
+		} else {
+			for (lilypad of lilypads4) {
+				if (!lilypad.includes(frogger)) {
+					console.log("drowned L4");
+					console.log(frogger, lilypad);
+					gameover = true;
+				}
+			}
 		}
 	}
 

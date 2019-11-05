@@ -47,7 +47,7 @@ class CarRight extends Component {
 
 class Frogger extends Component {
 	constructor() {
-		super(63 * 3, H * 0.9, 63, 70, "img/frogger.png");
+		super(63 * 3, H * 0.4, 63, 70, "img/frogger.png");
 	}
 	moveLeft() {
 		if (this.x > 0) {
@@ -76,12 +76,8 @@ class Lilypad extends Component {
 		super(-63, 0.1 * H, 63, 70, "img/lilypad.png");
 	}
 
-	excludes(person) {
-		return (
-			person.x + person.w < this.x &&
-			person.x > this.x + this.w &&
-			Math.round(this.y) === person.y
-		);
+	includes(person) {
+		return this.x <= person.x && person.x + person.w <= this.x + this.w;
 	}
 }
 
@@ -90,12 +86,8 @@ class Lilypad2 extends Component {
 		super(W, 0.2 * H, 63 * 2, 70, "img/lilypad2.png");
 	}
 
-	excludes(person) {
-		return (
-			person.x + person.w < this.x &&
-			person.x > this.x + this.w &&
-			Math.round(this.y) === person.y
-		);
+	includes(person) {
+		return this.x <= person.x && person.x + person.w <= this.x + this.w;
 	}
 }
 
@@ -104,12 +96,8 @@ class Lilypad4 extends Component {
 		super(-63 * 4, 0.3 * H, 63 * 4, 70, "img/lilypad4.png");
 	}
 
-	excludes(person) {
-		return (
-			person.x + person.w < this.x &&
-			person.x > this.x + this.w &&
-			Math.round(this.y) === person.y
-		);
+	includes(person) {
+		return this.x <= person.x && person.x + person.w <= this.x + this.w;
 	}
 }
 
