@@ -19,29 +19,13 @@ let rankingLine;
 /* ---- 
 ACTIONS UTILISATEUR
 ---- */
+
 document.getElementById("btn-start").onclick = function() {
 	startGame();
 };
 
 document.getElementById("btn-ranking").onclick = function() {
-	document.getElementById("art").style.display = "none";
-	removeAllChildren(document.querySelector(".ranking"));
-	if (ranking.length === 0) {
-		rankingLine = document.createElement("p");
-		rankingLine.style.color = "red";
-		rankingLine.style.lineHeight = "2em";
-		rankingLine.innerHTML =
-			"Personne dans le classement. <br>Sois le premier !";
-		document.querySelector(".ranking").appendChild(rankingLine);
-	} else {
-		ranking.map((el, i) => {
-			rankingLine = document.createElement("p");
-			rankingLine.innerHTML = `${i + 1} - ${el.nom.toUpperCase()} : ${
-				el.score
-			}`;
-			document.querySelector(".ranking").appendChild(rankingLine);
-		});
-	}
+	displayRanking();
 };
 
 document.onkeydown = function(e) {
@@ -71,7 +55,7 @@ function animLoop() {
 	frames++;
 	draw();
 
-	// EN CAS DE VICTOIRE
+	// VICTOIRE
 	if (win) {
 		setTimeout(function() {
 			let name = window.prompt("GG! Indiquer votre nom :");
@@ -80,10 +64,29 @@ function animLoop() {
 		}, 4000);
 	}
 
-	// CAS NOMINAL
+	// NOMINAL
 	if (!gameover && !win) {
 		raf = requestAnimationFrame(animLoop);
 		points++;
+	}
+}
+
+function checkGameoverIfDrown(person, lineHeight, objects) {
+	if (person.y === lineHeight) {
+		if (
+			objects.length === 0 ||
+			(objects.length !== 0 && objects.every(exclude))
+		) {
+			gameover = true;
+		}
+	}
+}
+
+function checkGameoverOnHit(objects, person) {
+	for (object of objects) {
+		if (object.hits(person)) {
+			gameover = true;
+		}
 	}
 }
 
@@ -91,54 +94,38 @@ function comparer(a, b) {
 	return a.score - b.score;
 }
 
+function displayRanking() {
+	document.getElementById("art").style.display = "none";
+	removeAllChildren(document.querySelector(".ranking"));
+	if (ranking.length === 0) {
+		rankingLine = document.createElement("p");
+		rankingLine.style.color = "red";
+		rankingLine.style.lineHeight = "2em";
+		rankingLine.innerHTML =
+			"Personne dans le classement. <br>Sois le premier !";
+		document.querySelector(".ranking").appendChild(rankingLine);
+	} else {
+		ranking.map((el, i) => {
+			rankingLine = document.createElement("p");
+			rankingLine.innerHTML = `${i + 1} - ${el.nom.toUpperCase()} : ${
+				el.score
+			}`;
+			document.querySelector(".ranking").appendChild(rankingLine);
+		});
+	}
+}
+
 function draw() {
 	ctx.clearRect(0, 0, W, H);
 
-	// CHAUSSEE DEPART
-	ctx.fillStyle = "rgb(151,151,151)";
-	ctx.fillRect(0, H * 0.9, W, H * 0.1);
-	// ROUTE
-	ctx.fillStyle = "rgb(110,110,110)";
-	ctx.fillRect(0, H * 0.5, W, H * 0.4);
-	// RIVE BAS
-	ctx.fillStyle = "rgb(223,172,79)";
-	ctx.fillRect(0, H * 0.4, W, H * 0.1);
-	// EAU
-	ctx.fillStyle = "rgb(17,167,254)";
-	ctx.fillRect(0, H * 0.1, W, H * 0.3);
-	// RIVE HAUT
-	ctx.fillStyle = "rgb(223,172,79)";
-	ctx.fillRect(0, 0, W, H * 0.1);
-
-	// LIGNE DE ROUTE 1
-	ctx.beginPath();
-	ctx.lineWidth = 10;
-	ctx.strokeStyle = "white";
-	ctx.setLineDash([35, 50]);
-	ctx.moveTo(0, H * 0.6);
-	ctx.lineTo(W, H * 0.6);
-	ctx.stroke();
-	ctx.closePath();
-
-	// LIGNE DE ROUTE 2
-	ctx.beginPath();
-	ctx.lineWidth = 10;
-	ctx.strokeStyle = "sandybrown";
-	ctx.setLineDash([]);
-	ctx.moveTo(0, H * 0.7);
-	ctx.lineTo(W, H * 0.7);
-	ctx.stroke();
-	ctx.closePath();
-
-	// LIGNE DE ROUTE 3
-	ctx.beginPath();
-	ctx.lineWidth = 10;
-	ctx.strokeStyle = "white";
-	ctx.setLineDash([35, 50]);
-	ctx.moveTo(0, H * 0.8);
-	ctx.lineTo(W, H * 0.8);
-	ctx.stroke();
-	ctx.closePath();
+	drawPath("rgb(151,151,151)", 0, H * 0.9, W, H * 0.1); // CHAUSSEE DEPART
+	drawPath("rgb(110,110,110)", 0, H * 0.5, W, H * 0.4); // ROUTE
+	drawPath("rgb(223,172,79)", 0, H * 0.4, W, H * 0.1); // RIVE BAS
+	drawPath("rgb(17,167,254)", 0, H * 0.1, W, H * 0.3); // EAU
+	drawPath("rgb(223,172,79)", 0, 0, W, H * 0.1); // RIVE HAUT
+	drawLine("white", 10, 0, H * 0.6, W, H * 0.6, [35, 50]); // LIGNE DE ROUTE 1
+	drawLine("sandybrown", 10, 0, H * 0.7, W, H * 0.7, []); // LIGNE DE ROUTE 2
+	drawLine("white", 10, 0, H * 0.8, W, H * 0.8, [35, 50]); // LIGNE DE ROUTE 3
 
 	// NENUPHARS
 	if (frames % 200 === 0) {
@@ -156,57 +143,13 @@ function draw() {
 		lilypads4.push(lilypad4);
 	}
 
-	lilypads1.forEach(function(lilypad) {
-		if (lilypad.x > W) {
-			lilypads1 = lilypads1.filter(el => el !== lilypad);
-		}
-		lilypad.x += 4;
-		lilypad.draw();
-	});
+	updateLeftObjects(lilypads1, W, 2);
+	updateRightObjects(lilypads2, -63 * 2, -3);
+	updateLeftObjects(lilypads4, W, 4);
 
-	lilypads2.forEach(function(lilypad) {
-		if (lilypad.x < -63 * 2) {
-			lilypads2 = lilypads2.filter(el => el !== lilypad);
-		}
-		lilypad.x -= 3;
-		lilypad.draw();
-	});
-
-	lilypads4.forEach(function(lilypad) {
-		if (lilypad.x > W) {
-			lilypads4 = lilypads4.filter(el => el !== lilypad);
-		}
-		lilypad.x += 4;
-		lilypad.draw();
-	});
-
-	// NON SUPPORT DES NENUPHARS
-	if (frogger.y === 0.1 * H) {
-		if (lilypads1.length === 0) {
-			gameover = true;
-		} else if (lilypads1.every(exclude)) {
-			console.log("drowned L1");
-			gameover = true;
-		}
-	}
-
-	if (frogger.y === 0.2 * H) {
-		if (lilypads2.length === 0) {
-			gameover = true;
-		} else if (lilypads2.every(exclude)) {
-			console.log("drowned L2");
-			gameover = true;
-		}
-	}
-
-	if (frogger.y === 0.3 * H) {
-		if (lilypads4.length === 0) {
-			gameover = true;
-		} else if (lilypads4.every(exclude)) {
-			console.log("drowned L4");
-			gameover = true;
-		}
-	}
+	checkGameoverIfDrown(frogger, 0.1 * H, lilypads1);
+	checkGameoverIfDrown(frogger, 0.2 * H, lilypads2);
+	checkGameoverIfDrown(frogger, 0.3 * H, lilypads4);
 
 	// FROGGER
 	frogger.draw();
@@ -226,66 +169,15 @@ function draw() {
 		carsLeft.push(carLeft);
 	}
 
-	carsLeft.forEach(function(car) {
-		if (car.x > W) {
-			carsLeft = carsLeft.filter(el => el !== car);
-		}
-		car.x += 8;
-		car.draw();
-	});
+	updateLeftObjects(carsLeft, W, 8);
+	updateRightObjects(carsRight, -153, -7);
+	updateLeftObjects(trucksLeft, W, 5);
+	updateRightObjects(trucksRight, -141, -7);
 
-	carsRight.forEach(function(car) {
-		if (car.x < -153) {
-			carsRight = carsRight.filter(el => el !== car);
-		}
-		car.x -= 7;
-		car.draw();
-	});
-
-	trucksLeft.forEach(function(truck) {
-		if (truck.x > W) {
-			trucksLeft = trucksLeft.filter(el => el !== truck);
-		}
-		truck.x += 5;
-		truck.draw();
-	});
-
-	trucksRight.forEach(function(truck) {
-		if (truck.x < -141) {
-			trucksRight = trucksRight.filter(el => el !== truck);
-		}
-		truck.x -= 7;
-		truck.draw();
-	});
-
-	// COLLISIONS VOITURES ET CAMIONS
-	for (obstacle of carsLeft) {
-		if (obstacle.hits(frogger)) {
-			console.log("crashed CL");
-			gameover = true;
-		}
-	}
-
-	for (obstacle of carsRight) {
-		if (obstacle.hits(frogger)) {
-			console.log("crashed CR");
-			gameover = true;
-		}
-	}
-
-	for (obstacle of trucksLeft) {
-		if (obstacle.hits(frogger)) {
-			console.log("crashed TL");
-			gameover = true;
-		}
-	}
-
-	for (obstacle of trucksRight) {
-		if (obstacle.hits(frogger)) {
-			console.log("crashed TR");
-			gameover = true;
-		}
-	}
+	checkGameoverOnHit(carsLeft, frogger);
+	checkGameoverOnHit(carsRight, frogger);
+	checkGameoverOnHit(trucksLeft, frogger);
+	checkGameoverOnHit(trucksRight, frogger);
 
 	// RESULTAT
 	if (frogger.y === 0 && !gameover) {
@@ -310,6 +202,26 @@ function draw() {
 	ctx.font = "60px sans-serif";
 	ctx.textAlign = "end";
 	ctx.fillText(points, 550, 55);
+}
+
+function drawLine(color, width, xFrom, yFrom, xTo, yTo, dashwidth = []) {
+	ctx.beginPath();
+	ctx.lineWidth = width;
+	ctx.strokeStyle = color;
+	ctx.setLineDash(dashwidth);
+	ctx.moveTo(xFrom, yFrom);
+	ctx.lineTo(xTo, yTo);
+	ctx.stroke();
+	ctx.closePath();
+}
+
+function drawPath(color, x0, y0, width, height) {
+	ctx.fillStyle = color;
+	ctx.fillRect(x0, y0, width, height);
+}
+
+function exclude(currentLilypad) {
+	return currentLilypad.excludes(frogger);
 }
 
 function removeAllChildren(node) {
@@ -342,6 +254,22 @@ function startGame() {
 	document.querySelector(".ost-main").play();
 }
 
-function exclude(currentLilypad) {
-	return currentLilypad.excludes(frogger);
+function updateLeftObjects(objects, limit, vx) {
+	objects.forEach(function(object) {
+		if (object.x > limit) {
+			objects = objects.filter(el => el !== object);
+		}
+		object.x += vx;
+		object.draw();
+	});
+}
+
+function updateRightObjects(objects, limit, vx) {
+	objects.forEach(function(object) {
+		if (object.x < limit) {
+			objects = objects.filter(el => el !== object);
+		}
+		object.x += vx;
+		object.draw();
+	});
 }
