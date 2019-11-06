@@ -115,6 +115,27 @@ function displayRanking() {
 	}
 }
 
+function displayGameover() {
+	document.querySelector(".txt").style.color = "red";
+	document.querySelector(".txt").innerHTML = "Essaie encore".toUpperCase();
+	document.querySelector(".ost-main").pause();
+	document.querySelector(".ost-gameover").play();
+}
+
+function displayScore() {
+	ctx.fillStyle = "black";
+	ctx.font = "60px sans-serif";
+	ctx.textAlign = "end";
+	ctx.fillText(points, 550, 55);
+}
+
+function displayWin() {
+	document.querySelector(".txt").style.color = "green";
+	document.querySelector(".txt").innerHTML = "Bravo !".toUpperCase();
+	document.querySelector(".ost-main").pause();
+	document.querySelector(".ost-win").play();
+}
+
 function draw() {
 	ctx.clearRect(0, 0, W, H);
 
@@ -182,26 +203,15 @@ function draw() {
 	// RESULTAT
 	if (frogger.y === 0 && !gameover) {
 		win = true;
-		document.querySelector(".txt").style.color = "green";
-		document.querySelector(".txt").innerHTML = "Bravo !".toUpperCase();
-		document.querySelector(".ost-main").pause();
-		document.querySelector(".ost-win").play();
+		displayWin();
 	}
 
 	if (gameover) {
-		document.querySelector(".txt").style.color = "red";
-		document.querySelector(
-			".txt"
-		).innerHTML = "Essaie encore".toUpperCase();
-		document.querySelector(".ost-main").pause();
-		document.querySelector(".ost-gameover").play();
+		displayGameover();
 	}
 
-	// POINTS
-	ctx.fillStyle = "black";
-	ctx.font = "60px sans-serif";
-	ctx.textAlign = "end";
-	ctx.fillText(points, 550, 55);
+	// SCORE
+	displayScore();
 }
 
 function drawLine(color, width, xFrom, yFrom, xTo, yTo, dashwidth = []) {
