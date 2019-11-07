@@ -64,6 +64,12 @@ CLASSES
 	text-align: center;
 }
 
+.disabled,
+.disabled:hover {
+	background-color: gray;
+	color: rgba(0, 0, 0, 0.5);
+}
+
 .pixel {
 	display: table-cell;
 	background-color: white;

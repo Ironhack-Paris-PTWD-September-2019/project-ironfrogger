@@ -15,7 +15,9 @@ let gameover, win, raf;
 let frames = 0;
 let ranking = [];
 let rankingLine;
-let water, grass1, grass2, sideroad;
+let water, grass1, grass2, sideroad, heart;
+let nbLives = 3;
+let lose = false;
 
 /* ---- 
 ACTIONS UTILISATEUR
@@ -65,8 +67,13 @@ function animLoop() {
 		}, 4000);
 	}
 
-	// NOMINAL
-	if (!gameover && !win) {
+	// 1 VIE EN MOINS
+	if (gameover && !lose && !win) {
+		document.querySelector("#btn-start").innerHTML = "RETRY";
+	}
+
+	if (!gameover && !win && !lose) {
+		// NOMINAL
 		raf = requestAnimationFrame(animLoop);
 		points++;
 	}
@@ -117,8 +124,20 @@ function displayRanking() {
 }
 
 function displayGameover() {
-	document.querySelector(".txt").style.color = "red";
+	document.querySelector(".txt").style.color = "orange";
 	document.querySelector(".txt").innerHTML = "Essaie encore".toUpperCase();
+	document.querySelector(".ost-main").pause();
+	document.querySelector(".ost-gameover").play();
+}
+
+function displayLose() {
+	document.querySelector(".txt").style.color = "red";
+	document.querySelector(".txt").innerHTML = "Laisse tomber".toUpperCase();
+	document.querySelector("#btn-start").classList.add("disabled");
+	[...document.querySelectorAll(".eye")].map(
+		eye => (eye.style.backgroundColor = "red")
+	);
+	document.querySelector("#btn-start").disabled = true;
 	document.querySelector(".ost-main").pause();
 	document.querySelector(".ost-gameover").play();
 }
@@ -148,6 +167,11 @@ function draw() {
 	drawLine("white", 10, 0, H * 0.6, W, H * 0.6, [35, 50]); // LIGNE DE ROUTE 1
 	drawLine("sandybrown", 10, 0, H * 0.7, W, H * 0.7, []); // LIGNE DE ROUTE 2
 	drawLine("white", 10, 0, H * 0.8, W, H * 0.8, [35, 50]); // LIGNE DE ROUTE 3
+
+	for (let i = 0; i < nbLives; i++) {
+		heart.x = i * 70;
+		heart.draw();
+	}
 
 	// NENUPHARS
 	if (frames % 200 === 0) {
@@ -209,6 +233,15 @@ function draw() {
 
 	if (gameover) {
 		displayGameover();
+		nbLives = Math.max(0, nbLives - 1);
+	}
+
+	if (nbLives === 0) {
+		lose = true;
+	}
+
+	if (lose) {
+		displayLose();
 	}
 
 	// SCORE
@@ -264,6 +297,7 @@ function startGame() {
 	grass1 = new Component(0, H * 0.4, W, H * 0.1, "img/grass1.jpeg");
 	grass2 = new Component(0, 0, W, H * 0.1, "img/grass2.jpeg");
 	sideroad = new Component(0, H * 0.9, W, H * 0.1, "img/sideroad.jpeg");
+	heart = new Component(0, 0, 70, 70, "img/heart.png");
 
 	raf = requestAnimationFrame(animLoop);
 	document.querySelector(".ost-main").play();
