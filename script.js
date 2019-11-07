@@ -15,6 +15,7 @@ let gameover, win, raf;
 let frames = 0;
 let ranking = [];
 let rankingLine;
+let water, grass1, grass2, sideroad;
 
 /* ---- 
 ACTIONS UTILISATEUR
@@ -123,7 +124,7 @@ function displayGameover() {
 }
 
 function displayScore() {
-	ctx.fillStyle = "black";
+	ctx.fillStyle = "white";
 	ctx.font = "60px sans-serif";
 	ctx.textAlign = "end";
 	ctx.fillText(points, 550, 55);
@@ -139,11 +140,11 @@ function displayWin() {
 function draw() {
 	ctx.clearRect(0, 0, W, H);
 
-	drawPath("rgb(151,151,151)", 0, H * 0.9, W, H * 0.1); // CHAUSSEE DEPART
+	sideroad.draw();
 	drawPath("rgb(110,110,110)", 0, H * 0.5, W, H * 0.4); // ROUTE
-	drawPath("rgb(223,172,79)", 0, H * 0.4, W, H * 0.1); // RIVE BAS
-	drawPath("rgb(17,167,254)", 0, H * 0.1, W, H * 0.3); // EAU
-	drawPath("rgb(223,172,79)", 0, 0, W, H * 0.1); // RIVE HAUT
+	grass1.draw(); // RIVE BAS
+	water.draw(); // EAU
+	grass2.draw(); // RIVE HAUT
 	drawLine("white", 10, 0, H * 0.6, W, H * 0.6, [35, 50]); // LIGNE DE ROUTE 1
 	drawLine("sandybrown", 10, 0, H * 0.7, W, H * 0.7, []); // LIGNE DE ROUTE 2
 	drawLine("white", 10, 0, H * 0.8, W, H * 0.8, [35, 50]); // LIGNE DE ROUTE 3
@@ -259,6 +260,10 @@ function startGame() {
 	lilypads1 = [];
 	lilypads2 = [];
 	lilypads4 = [];
+	water = new Component(0, H * 0.1, W, H * 0.3, "img/water.png");
+	grass1 = new Component(0, H * 0.4, W, H * 0.1, "img/grass1.jpeg");
+	grass2 = new Component(0, 0, W, H * 0.1, "img/grass2.jpeg");
+	sideroad = new Component(0, H * 0.9, W, H * 0.1, "img/sideroad.jpeg");
 
 	raf = requestAnimationFrame(animLoop);
 	document.querySelector(".ost-main").play();
