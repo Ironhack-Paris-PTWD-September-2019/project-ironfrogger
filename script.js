@@ -11,18 +11,17 @@ let frogger, carLeft, carRight, truckLeft, truckRight;
 let lilypad1, lilypad2, lilypad4;
 let lilypads1, lilypads2, lilypads4;
 let carsLeft, carsRight, trucksLeft, trucksRight;
-let gameover, win, raf;
+let lost, win, raf;
 let frames = 0;
 let ranking = [];
 let rankingLine;
 let water, grass1, grass2, sideroad, heart;
 let nbLives = 3;
-let lose = false;
+let gameover = false;
 
 /* ---- 
 ACTIONS UTILISATEUR
 ---- */
-
 document.getElementById("btn-start").onclick = function() {
 	startGame();
 };
@@ -68,38 +67,58 @@ function animLoop() {
 	}
 
 	// 1 VIE EN MOINS
-	if (gameover && !lose && !win) {
+	if (lost && !gameover && !win) {
 		document.querySelector("#btn-start").innerHTML = "RETRY";
 	}
 
-	if (!gameover && !win && !lose) {
+	if (!lost && !win && !gameover) {
 		// NOMINAL
 		raf = requestAnimationFrame(animLoop);
 		points++;
 	}
 }
 
-function checkGameoverIfDrown(person, lineHeight, objects) {
+function checkLostIfDrown(person, lineHeight, objects) {
 	if (person.y === lineHeight) {
 		if (
 			objects.length === 0 ||
 			(objects.length !== 0 && objects.every(exclude))
 		) {
-			gameover = true;
+			lost = true;
 		}
 	}
 }
 
-function checkGameoverOnHit(objects, person) {
+function checkLostOnHit(objects, person) {
 	for (object of objects) {
 		if (object.hits(person)) {
-			gameover = true;
+			lost = true;
 		}
 	}
 }
 
 function comparer(a, b) {
 	return a.score - b.score;
+}
+
+function displayGameover() {
+	document.querySelector(".txt").style.color = "red";
+	document.querySelector(".txt").innerHTML = "Laisse tomber".toUpperCase();
+	document.querySelector("#btn-start").classList.add("disabled");
+	[...document.querySelectorAll(".eye")].map(
+		eye => (eye.style.backgroundColor = "red")
+	);
+
+	document.querySelector("#btn-start").disabled = true;
+	document.querySelector(".ost-main").pause();
+	document.querySelector(".ost-gameover").play();
+}
+
+function displayLost() {
+	document.querySelector(".txt").style.color = "orange";
+	document.querySelector(".txt").innerHTML = "Essaie encore".toUpperCase();
+	document.querySelector(".ost-main").pause();
+	document.querySelector(".ost-gameover").play();
 }
 
 function displayRanking() {
@@ -121,25 +140,6 @@ function displayRanking() {
 			document.querySelector(".ranking").appendChild(rankingLine);
 		});
 	}
-}
-
-function displayGameover() {
-	document.querySelector(".txt").style.color = "orange";
-	document.querySelector(".txt").innerHTML = "Essaie encore".toUpperCase();
-	document.querySelector(".ost-main").pause();
-	document.querySelector(".ost-gameover").play();
-}
-
-function displayLose() {
-	document.querySelector(".txt").style.color = "red";
-	document.querySelector(".txt").innerHTML = "Laisse tomber".toUpperCase();
-	document.querySelector("#btn-start").classList.add("disabled");
-	[...document.querySelectorAll(".eye")].map(
-		eye => (eye.style.backgroundColor = "red")
-	);
-	document.querySelector("#btn-start").disabled = true;
-	document.querySelector(".ost-main").pause();
-	document.querySelector(".ost-gameover").play();
 }
 
 function displayScore() {
@@ -193,9 +193,9 @@ function draw() {
 	updateRightObjects(lilypads2, -63 * 2, -3);
 	updateLeftObjects(lilypads4, W, 4);
 
-	checkGameoverIfDrown(frogger, 0.1 * H, lilypads1);
-	checkGameoverIfDrown(frogger, 0.2 * H, lilypads2);
-	checkGameoverIfDrown(frogger, 0.3 * H, lilypads4);
+	checkLostIfDrown(frogger, 0.1 * H, lilypads1);
+	checkLostIfDrown(frogger, 0.2 * H, lilypads2);
+	checkLostIfDrown(frogger, 0.3 * H, lilypads4);
 
 	// FROGGER
 	frogger.draw();
@@ -220,10 +220,10 @@ function draw() {
 	updateLeftObjects(trucksLeft, W, 5);
 	updateRightObjects(trucksRight, -141, -7);
 
-	checkGameoverOnHit(carsLeft, frogger);
-	checkGameoverOnHit(carsRight, frogger);
-	checkGameoverOnHit(trucksLeft, frogger);
-	checkGameoverOnHit(trucksRight, frogger);
+	checkLostOnHit(carsLeft, frogger);
+	checkLostOnHit(carsRight, frogger);
+	checkLostOnHit(trucksLeft, frogger);
+	checkLostOnHit(trucksRight, frogger);
 
 	// RESULTAT
 	if (frogger.y === 0 && !gameover) {
@@ -231,17 +231,17 @@ function draw() {
 		displayWin();
 	}
 
-	if (gameover) {
-		displayGameover();
+	if (lost) {
+		displayLost();
 		nbLives = Math.max(0, nbLives - 1);
 	}
 
 	if (nbLives === 0) {
-		lose = true;
+		gameover = true;
 	}
 
-	if (lose) {
-		displayLose();
+	if (gameover) {
+		displayGameover();
 	}
 
 	// SCORE
@@ -277,11 +277,12 @@ function removeAllChildren(node) {
 }
 
 function startGame() {
+	ctx.clearRect(0, 0, W, H);
 	if (raf) {
 		cancelAnimationFrame(raf);
 	}
 
-	gameover = false;
+	lost = false;
 	win = false;
 	points = 0;
 	document.querySelector(".txt").innerHTML = "";
