@@ -16,22 +16,20 @@ if (window.addEventListener) {
 }
 
 function setKonamiMode() {
-	evilMode = true;
+	modeGOT = true;
 
 	// Styling
-	document.querySelector("h1").innerHTML = "Evilfrogger".toUpperCase();
-	document.querySelector("h1").style.color = "red";
+	document.querySelector("h1").innerHTML = "Game of Frogs".toUpperCase();
+	document.querySelector("h1").style.color = "skyblue";
 	[...document.querySelectorAll("strong")].map(
-		el => (el.style.color = "red")
+		el => (el.style.color = "skyblue")
 	);
-	document.querySelector("#art").style.border = "5px solid red";
-	document.querySelector("#canvas").style.border = "5px solid red";
-	changePixelColor("lightseagreen", "red");
-	changePixelColor("lightgreen", "red");
+	document.querySelector("#art").style.border = "5px solid skyblue";
+	document.querySelector("#canvas").style.border = "5px solid skyblue";
+	changePixelColor("lightseagreen", "skyblue");
+	changePixelColor("lightgreen", "skyblue");
 	changePixelColor("sandybrown", "white");
-	[...document.querySelectorAll("button")].map(el =>
-		el.classList.add("evil")
-	);
+	[...document.querySelectorAll("button")].map(el => el.classList.add("got"));
 
 	// Game
 }

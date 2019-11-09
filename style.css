@@ -35,7 +35,7 @@ p {
 h1 {
 	margin: 5vh 10vh;
 	color: forestgreen;
-	font-size: 2.5em;
+	font-size: 2.2em;
 }
 
 strong {
@@ -69,9 +69,9 @@ CLASSES
 	color: rgba(0, 0, 0, 0.5);
 }
 
-.evil:hover {
-	color: #530000;
-	background-color: red;
+.got:hover {
+	color: darkslateblue;
+	background-color: skyblue;
 }
 
 .pixel {
@@ -91,8 +91,8 @@ CLASSES
 	background-color: lightseagreen;
 }
 
-.pixel.red {
-	background-color: red;
+.pixel.skyblue {
+	background-color: darkslategray;
 }
 
 .pixel.sandybrown {

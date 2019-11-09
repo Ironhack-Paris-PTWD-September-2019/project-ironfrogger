@@ -7,17 +7,12 @@ const W = canvas.width; // 567
 const H = canvas.height; // 700
 const w = 64;
 const h = 70;
-let evilMode = false;
+let modeGOT = false;
 let frogger, leftObstacle, rightObstacle;
 let ground1, ground2, ground4;
 let grounds1, grounds2, grounds4;
 let groundImgURL, groundImgURL2, groundImgURL4;
-let froggerImgURL,
-	fluidImgURL,
-	downSideImgURL,
-	topSideImgURL,
-	sideroadImgURL,
-	lifeImgURL;
+let froggerImgURL, fluidImgURL, downSideImgURL, topSideImgURL, lifeImgURL;
 let rightObstacleImgURL, leftObstacleImgURL;
 let leftObstacles, rightObstacles;
 let lost, win, raf;
@@ -32,11 +27,11 @@ let gameover = false;
 ACTIONS UTILISATEUR
 ---- */
 document.getElementById("btn-start").onclick = function() {
-	if (evilMode) {
+	if (modeGOT) {
 		nbLives = 1;
 	}
 	if (gameover === true) {
-		nbLives = evilMode ? 1 : 3;
+		nbLives = modeGOT ? 1 : 3;
 		gameover = false;
 	}
 	startGame();
@@ -118,25 +113,29 @@ function comparer(a, b) {
 }
 
 function displayGameover() {
-	document.querySelector(".txt").style.color = "red";
-	document.querySelector(".txt").innerHTML = "QQN D'AUTRE".toUpperCase();
 	document.querySelector("#btn-start").innerHTML = "RESTART";
-	document.querySelector(".ost-main").pause();
-	document.querySelector(".ost-gameover").play();
+	if (modeGOT) {
+		document.querySelector(".txt").style.color = "skyblue";
+		document.querySelector(".txt").innerHTML = "V. Morghulis".toUpperCase();
+		document.querySelector(".got-ost-main").pause();
+		document.querySelector(".got-ost-gameover").play();
+	} else {
+		document.querySelector(".txt").style.color = "red";
+		document.querySelector(".txt").innerHTML = "Oh non...".toUpperCase();
+		document.querySelector(".ost-main").pause();
+		document.querySelector(".ost-gameover").play();
+	}
 }
 
 function displayLost() {
-	if (evilMode) {
-		document.querySelector(".txt").style.color = "red";
-		document.querySelector(".txt").innerHTML = "V. Morghulis".toUpperCase();
-	} else {
+	if (!modeGOT) {
 		document.querySelector(".txt").style.color = "orange";
 		document.querySelector(
 			".txt"
 		).innerHTML = "Essaie encore".toUpperCase();
+		document.querySelector(".ost-main").pause();
+		document.querySelector(".ost-gameover").play();
 	}
-	document.querySelector(".ost-main").pause();
-	document.querySelector(".ost-gameover").play();
 }
 
 function displayRanking() {
@@ -144,11 +143,12 @@ function displayRanking() {
 	removeAllChildren(document.querySelector(".ranking"));
 	if (ranking.length === 0) {
 		rankingLine = document.createElement("p");
-		rankingLine.style.color = "red";
 		rankingLine.style.lineHeight = "2em";
-		if (evilMode) {
-			rankingLine.innerHTML = "Tous sont morts. <br>Bien fait.";
+		if (modeGOT) {
+			rankingLine.style.color = "skyblue";
+			rankingLine.innerHTML = "Des morts dans GoT. <br>Monnaie courante.";
 		} else {
+			rankingLine.style.color = "red";
 			rankingLine.innerHTML =
 				"Personne dans le classement. <br>Sois le premier !";
 		}
@@ -168,51 +168,46 @@ function displayRanking() {
 function displayScore() {
 	ctx.font = "60px sans-serif";
 	ctx.textAlign = "end";
-	if (evilMode) {
-		ctx.fillStyle = "red";
-	} else {
-		ctx.fillStyle = "white";
-	}
+	ctx.fillStyle = "white";
 	ctx.fillText(points, 550, 55);
 }
 
 function displayWin() {
-	if (evilMode) {
-		document.querySelector(".txt").style.color = "red";
-		document.querySelector(".txt").innerHTML = "Hellking!".toUpperCase();
+	if (modeGOT) {
+		document.querySelector(".txt").style.color = "skyblue";
+		document.querySelector(".txt").innerHTML = "Frog King".toUpperCase();
+		document.querySelector(".got-ost-main").pause();
 	} else {
 		document.querySelector(".txt").style.color = "green";
 		document.querySelector(".txt").innerHTML = "Bravo !".toUpperCase();
+		document.querySelector(".ost-main").pause();
 	}
-	document.querySelector(".ost-main").pause();
 	document.querySelector(".ost-win").play();
 }
 
 function draw() {
 	ctx.clearRect(0, 0, W, H);
 
-	sideroad.draw();
-	if (evilMode) {
-		drawPath("rgb(0,0,0)", 0, H * 0.5, W, H * 0.4); // ROUTE
+	if (modeGOT) {
+		drawPath("black", 0, H * 0.1, W, H * 0.3); // GROUND up
+		drawPath("rgb(255,255,255)", 0, H * 0.5, W, H * 0.6); // ROUTE
 		ctx.font = "70px Lalezar";
 		ctx.textAlign = "center";
-		ctx.fillStyle = "#404040";
-		ctx.fillText("HIGHWAY", W / 2, H * 0.6 - 10);
-		ctx.fillText("TO", W / 2, H * 0.7 - 10);
-		ctx.fillText("HELL", W / 2, H * 0.8 - 10);
-		ctx.fillText("ROAD 666", W / 2, H * 0.9 - 10);
+		ctx.fillStyle = "lightgray";
+		ctx.fillText("You", W / 2, H * 0.6 - 10);
+		ctx.fillText("know", W / 2, H * 0.7 - 10);
+		ctx.fillText("nothing", W / 2, H * 0.8 - 10);
+		ctx.fillText("Jon Snow", W / 2, H * 0.9 - 10);
 	} else {
+		sideroad.draw();
 		drawPath("rgb(110,110,110)", 0, H * 0.5, W, H * 0.4); // ROUTE
-	}
-
-	downSide.draw(); // RIVE BAS
-	fluid.draw(); // FLUIDE
-	topSide.draw(); // RIVE HAUT
-	if (!evilMode) {
 		drawLine("white", 10, 0, H * 0.6, W, H * 0.6, [35, 50]); // LIGNE DE ROUTE 1
 		drawLine("sandybrown", 10, 0, H * 0.7, W, H * 0.7, []); // LIGNE DE ROUTE 2
 		drawLine("white", 10, 0, H * 0.8, W, H * 0.8, [35, 50]); // LIGNE DE ROUTE 3
 	}
+	fluid.draw(); // FLUIDE
+	downSide.draw(); // RIVE BAS
+	topSide.draw(); // RIVE HAUT
 
 	for (let i = 0; i < nbLives; i++) {
 		life.x = i * 70;
@@ -220,10 +215,10 @@ function draw() {
 	}
 
 	// SUPPORTS
-	if (evilMode) {
-		groundImgURL = "img/evil/rock.png";
-		groundImgURL2 = "img/evil/rock2.png";
-		groundImgURL4 = "img/evil/rock4.png";
+	if (modeGOT) {
+		groundImgURL = "img/got/rock.png";
+		groundImgURL2 = "img/got/rock2.png";
+		groundImgURL4 = "img/got/rock4.png";
 	} else {
 		groundImgURL = "img/lilypad.png";
 		groundImgURL2 = "img/lilypad2.png";
@@ -258,9 +253,9 @@ function draw() {
 
 	// OBSTACLES
 	if (frames % 150 === 0) {
-		if (evilMode) {
-			rightObstacleImgURL = "img/evil/nyancat_right.png";
-			leftObstacleImgURL = "img/evil/nyancat_left.png";
+		if (modeGOT) {
+			rightObstacleImgURL = "img/got/dragon_right.png";
+			leftObstacleImgURL = "img/got/dragon_left.png";
 		} else {
 			rightObstacleImgURL = "img/truck_from_right.png";
 			leftObstacleImgURL = "img/truck_from_left.png";
@@ -274,9 +269,9 @@ function draw() {
 	}
 
 	if (frames % 70 === 0) {
-		if (evilMode) {
-			rightObstacleImgURL = "img/evil/nyancat_right.png";
-			leftObstacleImgURL = "img/evil/nyancat_left.png";
+		if (modeGOT) {
+			rightObstacleImgURL = "img/got/dragon_right.png";
+			leftObstacleImgURL = "img/got/dragon_left.png";
 		} else {
 			rightObstacleImgURL = "img/car_from_right.png";
 			leftObstacleImgURL = "img/car_from_left.png";
@@ -363,19 +358,18 @@ function startGame() {
 	grounds2 = [];
 	grounds4 = [];
 
-	if (evilMode) {
-		froggerImgURL = "img/evil/frog.png";
-		fluidImgURL = "img/evil/lava.png";
-		downSideImgURL = "img/evil/ground2.png";
-		topSideImgURL = "img/evil/ground1.png";
-		sideroadImgURL = "img/evil/ground1.png";
-		lifeImgURL = "img/evil/skull.png";
+	if (modeGOT) {
+		froggerImgURL = "img/got/frog.png";
+		fluidImgURL = "img/got/night_king.jpg";
+		downSideImgURL = "img/got/ground.png";
+		topSideImgURL = "img/got/ground.png";
+		lifeImgURL = "img/got/daenerys.png";
 	} else {
 		froggerImgURL = "img/frogger.png";
 		fluidImgURL = "img/water.png";
 		downSideImgURL = "img/grass1.jpeg";
 		topSideImgURL = "img/grass2.jpeg";
-		sideroadImgURL = "img/sideroad.jpeg";
+		sideroad = new Component(0, H * 0.9, W, H * 0.1, "img/sideroad.jpeg");
 		lifeImgURL = "img/heart.png";
 	}
 
@@ -383,11 +377,14 @@ function startGame() {
 	fluid = new Component(0, H * 0.1, W, H * 0.3, fluidImgURL);
 	downSide = new Component(0, H * 0.4, W, H * 0.1, downSideImgURL);
 	topSide = new Component(0, 0, W, H * 0.1, topSideImgURL);
-	sideroad = new Component(0, H * 0.9, W, H * 0.1, sideroadImgURL);
 	life = new Component(0, 0, 70, 70, lifeImgURL);
 
 	raf = requestAnimationFrame(animLoop);
-	document.querySelector(".ost-main").play();
+	if (modeGOT) {
+		document.querySelector(".got-ost-main").play();
+	} else {
+		document.querySelector(".ost-main").play();
+	}
 }
 
 function updateLeftObjects(objects, limit, vx) {
