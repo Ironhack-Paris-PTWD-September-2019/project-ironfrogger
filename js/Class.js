@@ -1,3 +1,4 @@
+// CLASSE
 class Component {
 	constructor(x, y, w, h, src) {
 		const img = document.createElement("img");
@@ -19,35 +20,10 @@ class Component {
 	}
 }
 
-class CarLeft extends Component {
-	constructor() {
-		super(-153, 0.7 * H, 153, 70, "img/car_from_left.png");
-	}
-
-	hits(person) {
-		return (
-			!(person.x + person.w < this.x || person.x > this.x + this.w) &&
-			Math.round(this.y) === person.y
-		);
-	}
-}
-
-class CarRight extends Component {
-	constructor() {
-		super(W, 0.6 * H, 153, 70, "img/car_from_right.png");
-	}
-
-	hits(person) {
-		return (
-			!(person.x + person.w < this.x || person.x > this.x + this.w) &&
-			Math.round(this.y) === person.y
-		);
-	}
-}
-
+// SOUS-CLASSES LVL1
 class Frogger extends Component {
-	constructor() {
-		super(63 * 1, H * 0.9, 63, 70, "img/frogger.png");
+	constructor(address) {
+		super(63 * 1, H * 0.9, 63, 70, address);
 	}
 	moveLeft() {
 		if (this.x > 0) {
@@ -71,9 +47,9 @@ class Frogger extends Component {
 	}
 }
 
-class Lilypad extends Component {
-	constructor() {
-		super(-63, 0.1 * H, 63, 70, "img/lilypad.png");
+class Ground extends Component {
+	constructor(x, y, w, h, address) {
+		super(x, y, w, h, address);
 	}
 
 	excludes(person) {
@@ -81,29 +57,9 @@ class Lilypad extends Component {
 	}
 }
 
-class Lilypad2 extends Component {
-	constructor() {
-		super(W, 0.2 * H, 63 * 2, 70, "img/lilypad2.png");
-	}
-
-	excludes(person) {
-		return this.x > person.x + person.w || person.x > this.x + this.w;
-	}
-}
-
-class Lilypad4 extends Component {
-	constructor() {
-		super(-63 * 4, 0.3 * H, 63 * 4, 70, "img/lilypad4.png");
-	}
-
-	excludes(person) {
-		return this.x > person.x + person.w || person.x > this.x + this.w;
-	}
-}
-
-class TruckLeft extends Component {
-	constructor() {
-		super(-141, 0.8 * H, 141, 70, "img/truck_from_left.png");
+class Obstacle extends Component {
+	constructor(x, y, w, h, address) {
+		super(x, y, w, h, address);
 	}
 
 	hits(person) {
@@ -114,15 +70,33 @@ class TruckLeft extends Component {
 	}
 }
 
-class TruckRight extends Component {
-	constructor() {
-		super(W, 0.5 * H, 141, 70, "img/truck_from_right.png");
+// SOUS-CLASSES LVL2
+class Ground1 extends Ground {
+	constructor(address) {
+		super(-63, 0.1 * H, 63, 70, address);
 	}
+}
 
-	hits(person) {
-		return (
-			!(person.x + person.w < this.x || person.x > this.x + this.w) &&
-			Math.round(this.y) === person.y
-		);
+class Ground2 extends Ground {
+	constructor(address) {
+		super(W, 0.2 * H, 63 * 2, 70, address);
+	}
+}
+
+class Ground4 extends Ground {
+	constructor(address) {
+		super(-63 * 4, 0.3 * H, 63 * 4, 70, address);
+	}
+}
+
+class LeftObstacle extends Obstacle {
+	constructor(y, address) {
+		super(-141, y, 141, 70, address);
+	}
+}
+
+class RightObstacle extends Obstacle {
+	constructor(y, address) {
+		super(W, y, 141, 70, address);
 	}
 }

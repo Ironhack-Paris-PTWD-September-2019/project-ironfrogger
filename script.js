@@ -7,15 +7,24 @@ const W = canvas.width; // 567
 const H = canvas.height; // 700
 const w = 64;
 const h = 70;
-let frogger, carLeft, carRight, truckLeft, truckRight;
-let lilypad1, lilypad2, lilypad4;
-let lilypads1, lilypads2, lilypads4;
-let carsLeft, carsRight, trucksLeft, trucksRight;
+let evilMode = false;
+let frogger, leftObstacle, rightObstacle;
+let ground1, ground2, ground4;
+let grounds1, grounds2, grounds4;
+let groundImgURL, groundImgURL2, groundImgURL4;
+let froggerImgURL,
+	fluidImgURL,
+	downSideImgURL,
+	topSideImgURL,
+	sideroadImgURL,
+	lifeImgURL;
+let rightObstacleImgURL, leftObstacleImgURL;
+let leftObstacles, rightObstacles;
 let lost, win, raf;
 let frames = 0;
 let ranking = [];
 let rankingLine;
-let water, grass1, grass2, sideroad, heart;
+let fluid, downSide, topSide, sideroad, life;
 let nbLives = 3;
 let gameover = false;
 
@@ -23,8 +32,11 @@ let gameover = false;
 ACTIONS UTILISATEUR
 ---- */
 document.getElementById("btn-start").onclick = function() {
+	if (evilMode) {
+		nbLives = 1;
+	}
 	if (gameover === true) {
-		nbLives = 3;
+		nbLives = evilMode ? 1 : 3;
 		gameover = false;
 	}
 	startGame();
@@ -75,8 +87,8 @@ function animLoop() {
 		document.querySelector("#btn-start").innerHTML = "RETRY";
 	}
 
+	// NOMINAL
 	if (!lost && !win && !gameover) {
-		// NOMINAL
 		raf = requestAnimationFrame(animLoop);
 		points++;
 	}
@@ -107,21 +119,22 @@ function comparer(a, b) {
 
 function displayGameover() {
 	document.querySelector(".txt").style.color = "red";
-	document.querySelector(".txt").innerHTML = "Laisse tomber".toUpperCase();
-	// document.querySelector("#btn-start").classList.add("disabled");
-	[...document.querySelectorAll(".eye")].map(
-		eye => (eye.style.backgroundColor = "red")
-	);
-
-	// document.querySelector("#btn-start").disabled = true;
+	document.querySelector(".txt").innerHTML = "QQN D'AUTRE".toUpperCase();
 	document.querySelector("#btn-start").innerHTML = "RESTART";
 	document.querySelector(".ost-main").pause();
 	document.querySelector(".ost-gameover").play();
 }
 
 function displayLost() {
-	document.querySelector(".txt").style.color = "orange";
-	document.querySelector(".txt").innerHTML = "Essaie encore".toUpperCase();
+	if (evilMode) {
+		document.querySelector(".txt").style.color = "red";
+		document.querySelector(".txt").innerHTML = "V. Morghulis".toUpperCase();
+	} else {
+		document.querySelector(".txt").style.color = "orange";
+		document.querySelector(
+			".txt"
+		).innerHTML = "Essaie encore".toUpperCase();
+	}
 	document.querySelector(".ost-main").pause();
 	document.querySelector(".ost-gameover").play();
 }
@@ -133,8 +146,13 @@ function displayRanking() {
 		rankingLine = document.createElement("p");
 		rankingLine.style.color = "red";
 		rankingLine.style.lineHeight = "2em";
-		rankingLine.innerHTML =
-			"Personne dans le classement. <br>Sois le premier !";
+		if (evilMode) {
+			rankingLine.innerHTML = "Tous sont morts. <br>Bien fait.";
+		} else {
+			rankingLine.innerHTML =
+				"Personne dans le classement. <br>Sois le premier !";
+		}
+
 		document.querySelector(".ranking").appendChild(rankingLine);
 	} else {
 		ranking.map((el, i) => {
@@ -148,15 +166,24 @@ function displayRanking() {
 }
 
 function displayScore() {
-	ctx.fillStyle = "white";
 	ctx.font = "60px sans-serif";
 	ctx.textAlign = "end";
+	if (evilMode) {
+		ctx.fillStyle = "red";
+	} else {
+		ctx.fillStyle = "white";
+	}
 	ctx.fillText(points, 550, 55);
 }
 
 function displayWin() {
-	document.querySelector(".txt").style.color = "green";
-	document.querySelector(".txt").innerHTML = "Bravo !".toUpperCase();
+	if (evilMode) {
+		document.querySelector(".txt").style.color = "red";
+		document.querySelector(".txt").innerHTML = "Hellking!".toUpperCase();
+	} else {
+		document.querySelector(".txt").style.color = "green";
+		document.querySelector(".txt").innerHTML = "Bravo !".toUpperCase();
+	}
 	document.querySelector(".ost-main").pause();
 	document.querySelector(".ost-win").play();
 }
@@ -165,70 +192,108 @@ function draw() {
 	ctx.clearRect(0, 0, W, H);
 
 	sideroad.draw();
-	drawPath("rgb(110,110,110)", 0, H * 0.5, W, H * 0.4); // ROUTE
-	grass1.draw(); // RIVE BAS
-	water.draw(); // EAU
-	grass2.draw(); // RIVE HAUT
-	drawLine("white", 10, 0, H * 0.6, W, H * 0.6, [35, 50]); // LIGNE DE ROUTE 1
-	drawLine("sandybrown", 10, 0, H * 0.7, W, H * 0.7, []); // LIGNE DE ROUTE 2
-	drawLine("white", 10, 0, H * 0.8, W, H * 0.8, [35, 50]); // LIGNE DE ROUTE 3
-
-	for (let i = 0; i < nbLives; i++) {
-		heart.x = i * 70;
-		heart.draw();
+	if (evilMode) {
+		drawPath("rgb(0,0,0)", 0, H * 0.5, W, H * 0.4); // ROUTE
+		ctx.font = "70px Lalezar";
+		ctx.textAlign = "center";
+		ctx.fillStyle = "#404040";
+		ctx.fillText("HIGHWAY", W / 2, H * 0.6 - 10);
+		ctx.fillText("TO", W / 2, H * 0.7 - 10);
+		ctx.fillText("HELL", W / 2, H * 0.8 - 10);
+		ctx.fillText("ROAD 666", W / 2, H * 0.9 - 10);
+	} else {
+		drawPath("rgb(110,110,110)", 0, H * 0.5, W, H * 0.4); // ROUTE
 	}
 
-	// NENUPHARS
+	downSide.draw(); // RIVE BAS
+	fluid.draw(); // FLUIDE
+	topSide.draw(); // RIVE HAUT
+	if (!evilMode) {
+		drawLine("white", 10, 0, H * 0.6, W, H * 0.6, [35, 50]); // LIGNE DE ROUTE 1
+		drawLine("sandybrown", 10, 0, H * 0.7, W, H * 0.7, []); // LIGNE DE ROUTE 2
+		drawLine("white", 10, 0, H * 0.8, W, H * 0.8, [35, 50]); // LIGNE DE ROUTE 3
+	}
+
+	for (let i = 0; i < nbLives; i++) {
+		life.x = i * 70;
+		life.draw();
+	}
+
+	// SUPPORTS
+	if (evilMode) {
+		groundImgURL = "img/evil/rock.png";
+		groundImgURL2 = "img/evil/rock2.png";
+		groundImgURL4 = "img/evil/rock4.png";
+	} else {
+		groundImgURL = "img/lilypad.png";
+		groundImgURL2 = "img/lilypad2.png";
+		groundImgURL4 = "img/lilypad4.png";
+	}
+
 	if (frames % 200 === 0) {
-		lilypad1 = new Lilypad();
-		lilypads1.push(lilypad1);
+		ground1 = new Ground1(groundImgURL);
+		grounds1.push(ground1);
 	}
 
 	if (frames % 150 === 0) {
-		lilypad2 = new Lilypad2();
-		lilypads2.push(lilypad2);
+		ground2 = new Ground2(groundImgURL2);
+		grounds2.push(ground2);
 	}
 
 	if (frames % 100 === 0) {
-		lilypad4 = new Lilypad4();
-		lilypads4.push(lilypad4);
+		ground4 = new Ground4(groundImgURL4);
+		grounds4.push(ground4);
 	}
 
-	updateLeftObjects(lilypads1, W, 2);
-	updateRightObjects(lilypads2, -63 * 2, -3);
-	updateLeftObjects(lilypads4, W, 4);
+	updateLeftObjects(grounds1, W, 2);
+	updateRightObjects(grounds2, -63 * 2, -3);
+	updateLeftObjects(grounds4, W, 4);
 
-	checkLostIfDrown(frogger, 0.1 * H, lilypads1);
-	checkLostIfDrown(frogger, 0.2 * H, lilypads2);
-	checkLostIfDrown(frogger, 0.3 * H, lilypads4);
+	checkLostIfDrown(frogger, 0.1 * H, grounds1);
+	checkLostIfDrown(frogger, 0.2 * H, grounds2);
+	checkLostIfDrown(frogger, 0.3 * H, grounds4);
 
 	// FROGGER
 	frogger.draw();
 
-	// VOITURES ET CAMIONS
+	// OBSTACLES
 	if (frames % 150 === 0) {
-		truckRight = new TruckRight();
-		trucksRight.push(truckRight);
-		truckLeft = new TruckLeft();
-		trucksLeft.push(truckLeft);
+		if (evilMode) {
+			rightObstacleImgURL = "img/evil/nyancat_right.png";
+			leftObstacleImgURL = "img/evil/nyancat_left.png";
+		} else {
+			rightObstacleImgURL = "img/truck_from_right.png";
+			leftObstacleImgURL = "img/truck_from_left.png";
+		}
+
+		rightObstacle = new RightObstacle(0.5 * H, rightObstacleImgURL);
+		leftObstacle = new LeftObstacle(0.8 * H, leftObstacleImgURL);
+
+		rightObstacles.push(rightObstacle);
+		leftObstacles.push(leftObstacle);
 	}
 
 	if (frames % 70 === 0) {
-		carRight = new CarRight();
-		carsRight.push(carRight);
-		carLeft = new CarLeft();
-		carsLeft.push(carLeft);
+		if (evilMode) {
+			rightObstacleImgURL = "img/evil/nyancat_right.png";
+			leftObstacleImgURL = "img/evil/nyancat_left.png";
+		} else {
+			rightObstacleImgURL = "img/car_from_right.png";
+			leftObstacleImgURL = "img/car_from_left.png";
+		}
+
+		rightObstacle = new RightObstacle(0.6 * H, rightObstacleImgURL);
+		leftObstacle = new LeftObstacle(0.7 * H, leftObstacleImgURL);
+
+		rightObstacles.push(rightObstacle);
+		leftObstacles.push(leftObstacle);
 	}
 
-	updateLeftObjects(carsLeft, W, 8);
-	updateRightObjects(carsRight, -153, -7);
-	updateLeftObjects(trucksLeft, W, 5);
-	updateRightObjects(trucksRight, -141, -7);
+	updateLeftObjects(leftObstacles, W, 5);
+	updateRightObjects(rightObstacles, -141, -7);
 
-	checkLostOnHit(carsLeft, frogger);
-	checkLostOnHit(carsRight, frogger);
-	checkLostOnHit(trucksLeft, frogger);
-	checkLostOnHit(trucksRight, frogger);
+	checkLostOnHit(leftObstacles, frogger);
+	checkLostOnHit(rightObstacles, frogger);
 
 	// RESULTAT
 	if (frogger.y === 0 && !gameover) {
@@ -282,7 +347,6 @@ function removeAllChildren(node) {
 }
 
 function startGame() {
-	// ctx.clearRect(0, 0, W, H);
 	if (raf) {
 		console.log("cancel RAF");
 		cancelAnimationFrame(raf);
@@ -292,19 +356,35 @@ function startGame() {
 	win = false;
 	points = 0;
 	document.querySelector(".txt").innerHTML = "";
-	frogger = new Frogger();
-	carsLeft = [];
-	carsRight = [];
-	trucksLeft = [];
-	trucksRight = [];
-	lilypads1 = [];
-	lilypads2 = [];
-	lilypads4 = [];
-	water = new Component(0, H * 0.1, W, H * 0.3, "img/water.png");
-	grass1 = new Component(0, H * 0.4, W, H * 0.1, "img/grass1.jpeg");
-	grass2 = new Component(0, 0, W, H * 0.1, "img/grass2.jpeg");
-	sideroad = new Component(0, H * 0.9, W, H * 0.1, "img/sideroad.jpeg");
-	heart = new Component(0, 0, 70, 70, "img/heart.png");
+
+	leftObstacles = [];
+	rightObstacles = [];
+	grounds1 = [];
+	grounds2 = [];
+	grounds4 = [];
+
+	if (evilMode) {
+		froggerImgURL = "img/evil/frog.png";
+		fluidImgURL = "img/evil/lava.png";
+		downSideImgURL = "img/evil/ground2.png";
+		topSideImgURL = "img/evil/ground1.png";
+		sideroadImgURL = "img/evil/ground1.png";
+		lifeImgURL = "img/evil/skull.png";
+	} else {
+		froggerImgURL = "img/frogger.png";
+		fluidImgURL = "img/water.png";
+		downSideImgURL = "img/grass1.jpeg";
+		topSideImgURL = "img/grass2.jpeg";
+		sideroadImgURL = "img/sideroad.jpeg";
+		lifeImgURL = "img/heart.png";
+	}
+
+	frogger = new Frogger(froggerImgURL);
+	fluid = new Component(0, H * 0.1, W, H * 0.3, fluidImgURL);
+	downSide = new Component(0, H * 0.4, W, H * 0.1, downSideImgURL);
+	topSide = new Component(0, 0, W, H * 0.1, topSideImgURL);
+	sideroad = new Component(0, H * 0.9, W, H * 0.1, sideroadImgURL);
+	life = new Component(0, 0, 70, 70, lifeImgURL);
 
 	raf = requestAnimationFrame(animLoop);
 	document.querySelector(".ost-main").play();

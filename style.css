@@ -50,7 +50,6 @@ CLASSES
 ---- */
 .container {
 	width: 100vw;
-	height: 100vh;
 	display: flex;
 	align-items: flex-start;
 	background-color: black;
@@ -70,6 +69,11 @@ CLASSES
 	color: rgba(0, 0, 0, 0.5);
 }
 
+.evil:hover {
+	color: #530000;
+	background-color: red;
+}
+
 .pixel {
 	display: table-cell;
 	background-color: white;
@@ -87,8 +91,16 @@ CLASSES
 	background-color: lightseagreen;
 }
 
+.pixel.red {
+	background-color: red;
+}
+
 .pixel.sandybrown {
 	background-color: sandybrown;
+}
+
+.pixel.white {
+	background-color: white;
 }
 
 .right {
