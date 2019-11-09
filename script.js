@@ -23,6 +23,10 @@ let gameover = false;
 ACTIONS UTILISATEUR
 ---- */
 document.getElementById("btn-start").onclick = function() {
+	if (gameover === true) {
+		nbLives = 3;
+		gameover = false;
+	}
 	startGame();
 };
 
@@ -63,7 +67,7 @@ function animLoop() {
 			let name = window.prompt("GG! Indiquer votre nom :");
 			ranking.push({ nom: name, score: points });
 			ranking.sort(comparer);
-		}, 4000);
+		}, 2000);
 	}
 
 	// 1 VIE EN MOINS
@@ -104,12 +108,13 @@ function comparer(a, b) {
 function displayGameover() {
 	document.querySelector(".txt").style.color = "red";
 	document.querySelector(".txt").innerHTML = "Laisse tomber".toUpperCase();
-	document.querySelector("#btn-start").classList.add("disabled");
+	// document.querySelector("#btn-start").classList.add("disabled");
 	[...document.querySelectorAll(".eye")].map(
 		eye => (eye.style.backgroundColor = "red")
 	);
 
-	document.querySelector("#btn-start").disabled = true;
+	// document.querySelector("#btn-start").disabled = true;
+	document.querySelector("#btn-start").innerHTML = "RESTART";
 	document.querySelector(".ost-main").pause();
 	document.querySelector(".ost-gameover").play();
 }
@@ -277,8 +282,9 @@ function removeAllChildren(node) {
 }
 
 function startGame() {
-	ctx.clearRect(0, 0, W, H);
+	// ctx.clearRect(0, 0, W, H);
 	if (raf) {
+		console.log("cancel RAF");
 		cancelAnimationFrame(raf);
 	}
 
