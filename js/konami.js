@@ -24,13 +24,13 @@ function setKonamiMode() {
 	modeGOT = true; // Variable utilisée dans script.js
 
 	// Styling
-	document.querySelector("h1").innerHTML = "Game of Frogs".toUpperCase();
-	document.querySelector("h1").style.color = "skyblue";
+	$h1.innerHTML = "Game of Frogs".toUpperCase();
+	$h1.style.color = "skyblue";
 	[...document.querySelectorAll("strong")].map(
 		el => (el.style.color = "skyblue")
 	);
-	document.querySelector("#art").style.border = "5px solid skyblue";
-	document.querySelector("#canvas").style.border = "5px solid skyblue";
+	$art.style.border = "5px solid skyblue";
+	$canvas.style.border = "5px solid skyblue";
 	changePixelColor("lightseagreen", "skyblue");
 	changePixelColor("lightgreen", "skyblue");
 	changePixelColor("sandybrown", "white");

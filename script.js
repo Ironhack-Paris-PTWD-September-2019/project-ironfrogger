@@ -7,6 +7,18 @@ const W = canvas.width; // 567px
 const H = canvas.height; // 700px
 const w = 64;
 const h = 70;
+const $art = document.querySelector("#art");
+const $btnStart = document.querySelector("#btn-start");
+const $canvas = document.querySelector("#canvas");
+const $gotOstGameover = document.querySelector(".got-ost-gameover");
+const $gotOstMain = document.querySelector(".got-ost-main");
+const $h1 = document.querySelector("h1");
+const $ostGameover = document.querySelector(".ost-gameover");
+const $ostMain = document.querySelector(".ost-main");
+const $ostMove = document.querySelector(".ost-move");
+const $ostWin = document.querySelector(".ost-win");
+const $ranking = document.querySelector(".ranking");
+const $txt = document.querySelector(".txt");
 let modeGOT = false;
 let frogger, leftObstacle, rightObstacle;
 let ground1, ground2, ground4;
@@ -61,7 +73,7 @@ document.onkeydown = function(e) {
 		case 40:
 			frogger.moveDown();
 	}
-	document.querySelector(".ost-move").play();
+	$ostMove.play();
 };
 
 /* ---- 
@@ -84,7 +96,7 @@ function animLoop() {
 
 	// 1 VIE EN MOINS
 	if (lost && !gameover && !win) {
-		document.querySelector("#btn-start").innerHTML = "RETRY";
+		$btnStart.innerHTML = "RETRY";
 	}
 
 	// NOMINAL
@@ -122,36 +134,34 @@ function comparer(a, b) {
 
 // Fonction pour modifier l'IHM en cas de gameover (modes normal et Konami)
 function displayGameover() {
-	document.querySelector("#btn-start").innerHTML = "RESTART";
+	$btnStart.innerHTML = "RESTART";
 	if (modeGOT) {
-		document.querySelector(".txt").style.color = "skyblue";
-		document.querySelector(".txt").innerHTML = "V. Morghulis".toUpperCase();
-		document.querySelector(".got-ost-main").pause();
-		document.querySelector(".got-ost-gameover").play();
+		$txt.style.color = "skyblue";
+		$txt.innerHTML = "V. Morghulis".toUpperCase();
+		$gotOstMain.pause();
+		$gotOstGameover.play();
 	} else {
-		document.querySelector(".txt").style.color = "red";
-		document.querySelector(".txt").innerHTML = "Oh non...".toUpperCase();
-		document.querySelector(".ost-main").pause();
-		document.querySelector(".ost-gameover").play();
+		$txt.style.color = "red";
+		$txt.innerHTML = "Oh non...".toUpperCase();
+		$ostMain.pause();
+		$ostGameover.play();
 	}
 }
 
 // Fonction pour modifier l'IHM en cas de perte d'une vie (mode normal seulement)
 function displayLost() {
 	if (!modeGOT) {
-		document.querySelector(".txt").style.color = "orange";
-		document.querySelector(
-			".txt"
-		).innerHTML = "Essaie encore".toUpperCase();
-		document.querySelector(".ost-main").pause();
-		document.querySelector(".ost-gameover").play();
+		$txt.style.color = "orange";
+		$txt.innerHTML = "Essaie encore".toUpperCase();
+		$ostMain.pause();
+		$ostGameover.play();
 	}
 }
 
 // Fonction d'affichage du classement (à la place de la grenouille en pixel art) (modes normal et Konami)
 function displayRanking() {
 	document.getElementById("art").style.display = "none";
-	removeAllChildren(document.querySelector(".ranking"));
+	removeAllChildren($ranking);
 	if (ranking.length === 0) {
 		rankingLine = document.createElement("p");
 		rankingLine.style.lineHeight = "2em";
@@ -164,14 +174,14 @@ function displayRanking() {
 				"Personne dans le classement. <br>Sois le premier !";
 		}
 
-		document.querySelector(".ranking").appendChild(rankingLine);
+		$ranking.appendChild(rankingLine);
 	} else {
 		ranking.map((el, i) => {
 			rankingLine = document.createElement("p");
 			rankingLine.innerHTML = `${i + 1} - ${el.nom.toUpperCase()} : ${
 				el.score
 			}`;
-			document.querySelector(".ranking").appendChild(rankingLine);
+			$ranking.appendChild(rankingLine);
 		});
 	}
 }
@@ -187,15 +197,15 @@ function displayScore() {
 // Fonction d'affichage en cas de victoire (modes normal et Konami)
 function displayWin() {
 	if (modeGOT) {
-		document.querySelector(".txt").style.color = "skyblue";
-		document.querySelector(".txt").innerHTML = "Frog King".toUpperCase();
-		document.querySelector(".got-ost-main").pause();
+		$txt.style.color = "skyblue";
+		$txt.innerHTML = "Frog King".toUpperCase();
+		$gotOstMain.pause();
 	} else {
-		document.querySelector(".txt").style.color = "green";
-		document.querySelector(".txt").innerHTML = "Bravo !".toUpperCase();
-		document.querySelector(".ost-main").pause();
+		$txt.style.color = "green";
+		$txt.innerHTML = "Bravo !".toUpperCase();
+		$ostMain.pause();
 	}
-	document.querySelector(".ost-win").play();
+	$ostWin.play();
 }
 
 // Fonction de dessin du canvas
@@ -373,7 +383,7 @@ function startGame() {
 	lost = false;
 	win = false;
 	points = 0;
-	document.querySelector(".txt").innerHTML = "";
+	$txt.innerHTML = "";
 
 	leftObstacles = [];
 	rightObstacles = [];
@@ -404,9 +414,9 @@ function startGame() {
 
 	raf = requestAnimationFrame(animLoop);
 	if (modeGOT) {
-		document.querySelector(".got-ost-main").play();
+		$gotOstMain.play();
 	} else {
-		document.querySelector(".ost-main").play();
+		$ostMain.play();
 	}
 }
 
