@@ -1,7 +1,11 @@
+/* -----
+KONAMI CODE
+----- */
+
+// LISTENER
 if (window.addEventListener) {
 	var keys = [];
-	// konami = "38,38,40,40,37,39,37,39,66,65";
-	const konami = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65];
+	const konami = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65]; // Konami code
 
 	window.addEventListener(
 		"keydown",
@@ -15,8 +19,9 @@ if (window.addEventListener) {
 	);
 }
 
+// ACTIVATION DU KONAMI CODE
 function setKonamiMode() {
-	modeGOT = true;
+	modeGOT = true; // Variable utilisée dans script.js
 
 	// Styling
 	document.querySelector("h1").innerHTML = "Game of Frogs".toUpperCase();
@@ -30,10 +35,9 @@ function setKonamiMode() {
 	changePixelColor("lightgreen", "skyblue");
 	changePixelColor("sandybrown", "white");
 	[...document.querySelectorAll("button")].map(el => el.classList.add("got"));
-
-	// Game
 }
 
+// Fonction de changement de pixel
 function changePixelColor(oldColor, newColor) {
 	[...document.querySelectorAll(`.${oldColor}`)].map(pixel => {
 		pixel.classList.remove(oldColor);
@@ -41,6 +45,7 @@ function changePixelColor(oldColor, newColor) {
 	});
 }
 
+// Fonction pour vérifier si l'utilisateur a tapé une combinaison de touches (entre autres le Konami code)
 function containCode(keys, codeArr) {
 	var firstIndex = keys.indexOf(codeArr[0]);
 	let result = true;

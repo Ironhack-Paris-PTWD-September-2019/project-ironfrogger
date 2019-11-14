@@ -3,8 +3,8 @@ DECLARATIONS DES VARIABLES
 ---- */
 let $canvas = document.getElementById("canvas");
 let ctx = $canvas.getContext("2d");
-const W = canvas.width; // 567
-const H = canvas.height; // 700
+const W = canvas.width; // 567px
+const H = canvas.height; // 700px
 const w = 64;
 const h = 70;
 let modeGOT = false;
@@ -26,6 +26,7 @@ let gameover = false;
 /* ---- 
 ACTIONS UTILISATEUR
 ---- */
+// Clic sur bouton "START"
 document.getElementById("btn-start").onclick = function() {
 	if (modeGOT) {
 		nbLives = 1;
@@ -37,10 +38,12 @@ document.getElementById("btn-start").onclick = function() {
 	startGame();
 };
 
+// Clic sur bouton "CLASSEMENT"
 document.getElementById("btn-ranking").onclick = function() {
 	displayRanking();
 };
 
+// Actions sur les flèches directionnelles
 document.onkeydown = function(e) {
 	if (!frogger) return;
 
@@ -64,6 +67,8 @@ document.onkeydown = function(e) {
 /* ---- 
 HELPER FUNCTIONS
 ---- */
+
+// Fonction d'animation
 function animLoop() {
 	frames++;
 	draw();
@@ -89,6 +94,7 @@ function animLoop() {
 	}
 }
 
+// Fonction pour vérifier si la grenouille est dans l'eau
 function checkLostIfDrown(person, lineHeight, objects) {
 	if (person.y === lineHeight) {
 		if (
@@ -100,6 +106,7 @@ function checkLostIfDrown(person, lineHeight, objects) {
 	}
 }
 
+// Fonction pour vérifier si la grenouille a été percutée
 function checkLostOnHit(objects, person) {
 	for (object of objects) {
 		if (object.hits(person)) {
@@ -108,10 +115,12 @@ function checkLostOnHit(objects, person) {
 	}
 }
 
+// Fonction utilisée pour le classement (car tri sur tableau d'objets avec attributs nom et score)
 function comparer(a, b) {
 	return a.score - b.score;
 }
 
+// Fonction pour modifier l'IHM en cas de gameover (modes normal et Konami)
 function displayGameover() {
 	document.querySelector("#btn-start").innerHTML = "RESTART";
 	if (modeGOT) {
@@ -127,6 +136,7 @@ function displayGameover() {
 	}
 }
 
+// Fonction pour modifier l'IHM en cas de perte d'une vie (mode normal seulement)
 function displayLost() {
 	if (!modeGOT) {
 		document.querySelector(".txt").style.color = "orange";
@@ -138,6 +148,7 @@ function displayLost() {
 	}
 }
 
+// Fonction d'affichage du classement (à la place de la grenouille en pixel art) (modes normal et Konami)
 function displayRanking() {
 	document.getElementById("art").style.display = "none";
 	removeAllChildren(document.querySelector(".ranking"));
@@ -165,6 +176,7 @@ function displayRanking() {
 	}
 }
 
+// Fonction d'affichage du score en haut du canvas
 function displayScore() {
 	ctx.font = "60px sans-serif";
 	ctx.textAlign = "end";
@@ -172,6 +184,7 @@ function displayScore() {
 	ctx.fillText(points, 550, 55);
 }
 
+// Fonction d'affichage en cas de victoire (modes normal et Konami)
 function displayWin() {
 	if (modeGOT) {
 		document.querySelector(".txt").style.color = "skyblue";
@@ -185,6 +198,7 @@ function displayWin() {
 	document.querySelector(".ost-win").play();
 }
 
+// Fonction de dessin du canvas
 function draw() {
 	ctx.clearRect(0, 0, W, H);
 
@@ -215,6 +229,7 @@ function draw() {
 	}
 
 	// SUPPORTS
+	// Ressources graphiques
 	if (modeGOT) {
 		groundImgURL = "img/got/rock.png";
 		groundImgURL2 = "img/got/rock2.png";
@@ -225,6 +240,7 @@ function draw() {
 		groundImgURL4 = "img/lilypad4.png";
 	}
 
+	// Affichage
 	if (frames % 200 === 0) {
 		ground1 = new Ground1(groundImgURL);
 		grounds1.push(ground1);
@@ -252,6 +268,8 @@ function draw() {
 	frogger.draw();
 
 	// OBSTACLES
+	// Ressources graphiques
+	// Affichage
 	if (frames % 150 === 0) {
 		if (modeGOT) {
 			rightObstacleImgURL = "img/got/dragon_right.png";
@@ -313,6 +331,7 @@ function draw() {
 	displayScore();
 }
 
+// Fonction générique de tracé de ligne
 function drawLine(color, width, xFrom, yFrom, xTo, yTo, dashwidth = []) {
 	ctx.beginPath();
 	ctx.lineWidth = width;
@@ -324,15 +343,18 @@ function drawLine(color, width, xFrom, yFrom, xTo, yTo, dashwidth = []) {
 	ctx.closePath();
 }
 
+// Fonction générique de tracé de rectangle
 function drawPath(color, x0, y0, width, height) {
 	ctx.fillStyle = color;
 	ctx.fillRect(x0, y0, width, height);
 }
 
-function exclude(currentLilypad) {
-	return currentLilypad.excludes(frogger);
+// Fonction pour vérifier qu'aucun support ne porte la grenouille
+function exclude(support) {
+	return support.excludes(frogger);
 }
 
+// Fonction générique pour supprimer tous les enfants d'une node
 function removeAllChildren(node) {
 	let child = node.lastElementChild;
 	while (child) {
@@ -341,6 +363,7 @@ function removeAllChildren(node) {
 	}
 }
 
+// Fonction de lancement du jeu (activable par bouton ou touche entrée)
 function startGame() {
 	if (raf) {
 		console.log("cancel RAF");
@@ -387,6 +410,7 @@ function startGame() {
 	}
 }
 
+// Fonction de mise à jour des objets et de la liste d'objets venant de *gauche*
 function updateLeftObjects(objects, limit, vx) {
 	objects.forEach(function(object) {
 		if (object.x > limit) {
@@ -397,6 +421,7 @@ function updateLeftObjects(objects, limit, vx) {
 	});
 }
 
+// Fonction de mise à jour des objets et de la liste d'objets venant de *droite*
 function updateRightObjects(objects, limit, vx) {
 	objects.forEach(function(object) {
 		if (object.x < limit) {

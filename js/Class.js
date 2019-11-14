@@ -1,4 +1,5 @@
 // CLASSE
+// Générique
 class Component {
 	constructor(x, y, w, h, src) {
 		const img = document.createElement("img");
@@ -21,6 +22,7 @@ class Component {
 }
 
 // SOUS-CLASSES LVL1
+// Personnage
 class Frogger extends Component {
 	constructor(address) {
 		super(63 * 1, H * 0.9, 63, 70, address);
@@ -47,6 +49,7 @@ class Frogger extends Component {
 	}
 }
 
+// Support
 class Ground extends Component {
 	constructor(x, y, w, h, address) {
 		super(x, y, w, h, address);
@@ -57,6 +60,7 @@ class Ground extends Component {
 	}
 }
 
+// Obstacle
 class Obstacle extends Component {
 	constructor(x, y, w, h, address) {
 		super(x, y, w, h, address);
@@ -71,30 +75,35 @@ class Obstacle extends Component {
 }
 
 // SOUS-CLASSES LVL2
+// Support x1
 class Ground1 extends Ground {
 	constructor(address) {
 		super(-63, 0.1 * H, 63, 70, address);
 	}
 }
 
+// Support x2
 class Ground2 extends Ground {
 	constructor(address) {
 		super(W, 0.2 * H, 63 * 2, 70, address);
 	}
 }
 
+// Support x4
 class Ground4 extends Ground {
 	constructor(address) {
 		super(-63 * 4, 0.3 * H, 63 * 4, 70, address);
 	}
 }
 
+// Obstacle venant de gauche
 class LeftObstacle extends Obstacle {
 	constructor(y, address) {
 		super(-141, y, 141, 70, address);
 	}
 }
 
+// Onstacle venant de droite
 class RightObstacle extends Obstacle {
 	constructor(y, address) {
 		super(W, y, 141, 70, address);
