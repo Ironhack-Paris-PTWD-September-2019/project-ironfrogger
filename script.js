@@ -1,8 +1,6 @@
 /* ---- 
 DECLARATIONS DES VARIABLES
 ---- */
-let $canvas = document.getElementById("canvas");
-let ctx = $canvas.getContext("2d");
 const W = canvas.width; // 567px
 const H = canvas.height; // 700px
 const w = 64;
@@ -10,6 +8,7 @@ const h = 70;
 const $art = document.querySelector("#art");
 const $btnStart = document.querySelector("#btn-start");
 const $canvas = document.querySelector("#canvas");
+const ctx = $canvas.getContext("2d");
 const $gotOstGameover = document.querySelector(".got-ost-gameover");
 const $gotOstMain = document.querySelector(".got-ost-main");
 const $h1 = document.querySelector("h1");
@@ -39,7 +38,7 @@ let gameover = false;
 ACTIONS UTILISATEUR
 ---- */
 // Clic sur bouton "START"
-document.getElementById("btn-start").onclick = function() {
+document.getElementById("btn-start").onclick = function () {
 	if (modeGOT) {
 		nbLives = 1;
 	}
@@ -51,12 +50,12 @@ document.getElementById("btn-start").onclick = function() {
 };
 
 // Clic sur bouton "CLASSEMENT"
-document.getElementById("btn-ranking").onclick = function() {
+document.getElementById("btn-ranking").onclick = function () {
 	displayRanking();
 };
 
 // Actions sur les flèches directionnelles
-document.onkeydown = function(e) {
+document.onkeydown = function (e) {
 	if (!frogger) return;
 
 	console.log("keydown");
@@ -87,7 +86,7 @@ function animLoop() {
 
 	// VICTOIRE
 	if (win) {
-		setTimeout(function() {
+		setTimeout(function () {
 			let name = window.prompt("GG! Indiquer votre nom :");
 			ranking.push({ nom: name, score: points });
 			ranking.sort(comparer);
@@ -180,7 +179,7 @@ function displayRanking() {
 			rankingLine = document.createElement("p");
 			rankingLine.innerHTML = `${i + 1} - ${el.nom.toUpperCase()} : ${
 				el.score
-			}`;
+				}`;
 			$ranking.appendChild(rankingLine);
 		});
 	}
@@ -422,7 +421,7 @@ function startGame() {
 
 // Fonction de mise à jour des objets et de la liste d'objets venant de *gauche*
 function updateLeftObjects(objects, limit, vx) {
-	objects.forEach(function(object) {
+	objects.forEach(function (object) {
 		if (object.x > limit) {
 			objects = objects.filter(el => el !== object);
 		}
@@ -433,7 +432,7 @@ function updateLeftObjects(objects, limit, vx) {
 
 // Fonction de mise à jour des objets et de la liste d'objets venant de *droite*
 function updateRightObjects(objects, limit, vx) {
-	objects.forEach(function(object) {
+	objects.forEach(function (object) {
 		if (object.x < limit) {
 			objects = objects.filter(el => el !== object);
 		}
